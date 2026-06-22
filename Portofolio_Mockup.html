@@ -601,6 +601,83 @@
             font-weight: 700;
         }
 
+        /* FLOW VERTICAL */
+        .flow-vertical {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0;
+            margin: 16px 0;
+        }
+
+        .flow-v-arrow {
+            font-size: 18px;
+            color: var(--teal-700);
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        /* FLOW BRANCH */
+        .flow-branch {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin: 12px 0;
+        }
+
+        .flow-branch-path {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .flow-branch-label {
+            font-size: 9px;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-bottom: 4px;
+        }
+
+        .flow-label-approve {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .flow-label-reject {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        /* FLOW MULTI LANE */
+        .flow-lanes {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 16px;
+            margin: 16px 0;
+        }
+
+        .flow-lane {
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .flow-lane-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--teal-900);
+            margin-bottom: 8px;
+            padding-bottom: 6px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .flow-lane .flow-step {
+            margin: 6px 0;
+        }
+
         /* FOOTER */
         .doc-footer {
             text-align: center;
@@ -694,6 +771,10 @@
         <li><a href="#app2-fitur">Fitur & Teknologi Aplikasi 2</a></li>
         <li><a href="#links">Tautan & Akses Repository</a></li>
     </ol>
+    <div style="margin-top:16px;padding:12px;background:var(--teal-50);border-radius:8px;border-left:4px solid var(--teal-700)">
+        <strong style="font-size:12px;color:var(--teal-900)">Catatan Alur Diagram:</strong>
+        <p style="font-size:11px;margin:4px 0 0;color:var(--text-secondary)">Dokumen ini menyertakan alur diagram untuk: (1) Alur Data Input, (2) Alur Multi-Entry, (3) Alur Siklus Hidup Box Arsip, (4) Alur Role & Akses, (5) Alur Pengajuan Box, (6) Alur Peminjaman Box.</p>
+    </div>
 </div>
 
 <!-- ============================================================
@@ -773,6 +854,67 @@
             </tr>
         </tbody>
     </table>
+
+    <h3>Alur Data Input</h3>
+    <div class="flow-row">
+        <div class="flow-step">
+            <div class="step-label">📝 Input Manual</div>
+            <div class="step-desc">Isi Form (4 Section)</div>
+        </div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step" style="border-color:var(--lime-500)">
+            <div class="step-label">⚡ Auto-Calc</div>
+            <div class="step-desc">Hitung Pajak Otomatis</div>
+        </div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step" style="border-color:#22c55e">
+            <div class="step-label">💾 Simpan</div>
+            <div class="step-desc">localStorage Browser</div>
+        </div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step" style="border-color:#3b82f6">
+            <div class="step-label">📊 Dashboard</div>
+            <div class="step-desc">Visualisasi Data</div>
+        </div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step" style="border-color:#a855f7">
+            <div class="step-label">📥 Export</div>
+            <div class="step-desc">Download Excel</div>
+        </div>
+    </div>
+
+    <h3>Alur Multi-Entry</h3>
+    <div class="flow-vertical">
+        <div class="flow-step">
+            <div class="step-label">1. Isi Form Entri Pertama</div>
+            <div class="step-desc">Divisi, Vendor, Kategori, Tagihan</div>
+        </div>
+        <span class="flow-v-arrow">↓</span>
+        <div class="flow-step" style="border-color:#22c55e">
+            <div class="step-label">2. Klik "Simpan Entri"</div>
+            <div class="step-desc">Data tersimpan di localStorage</div>
+        </div>
+        <span class="flow-v-arrow">↓</span>
+        <div class="flow-step" style="border-color:var(--lime-500)">
+            <div class="step-label">3. Klik (+) Duplikat</div>
+            <div class="step-desc">Copy data sebelumnya (kecuali Kategori/Tagihan)</div>
+        </div>
+        <span class="flow-v-arrow">↓</span>
+        <div class="flow-step">
+            <div class="step-label">4. Ulangi untuk Entri Berikutnya</div>
+            <div class="step-desc">Ganti Kategori & nominal baru</div>
+        </div>
+        <span class="flow-v-arrow">↓</span>
+        <div class="flow-step" style="border-color:#3b82f6">
+            <div class="step-label">5. Review di Preview Table</div>
+            <div class="step-desc">Cek semua data, edit/hapus jika perlu</div>
+        </div>
+        <span class="flow-v-arrow">↓</span>
+        <div class="flow-step" style="border-color:#a855f7">
+            <div class="step-label">6. Export Excel</div>
+            <div class="step-desc">Download file .xlsx (2 sheet)</div>
+        </div>
+    </div>
 </section>
 
 <!-- ============================================================
@@ -1205,6 +1347,97 @@
             <tr><td><span class="mono">peminjaman</span></td><td>Peminjaman box arsip oleh divisi</td></tr>
         </tbody>
     </table>
+
+    <h3>Alur Siklus Hidup Box Arsip</h3>
+    <div class="flow-row">
+        <div class="flow-step">
+            <div class="step-label">📋 Pengajuan</div>
+            <div class="step-desc">User Divisi buat</div>
+        </div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step" style="border-color:#f59e0b">
+            <div class="step-label">⏳ Menunggu</div>
+            <div class="step-desc">Admin review</div>
+        </div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step" style="border-color:#22c55e">
+            <div class="step-label">✅ Disetujui</div>
+            <div class="step-desc">Siap input data</div>
+        </div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step" style="border-color:#3b82f6">
+            <div class="step-label">📝 Diinput</div>
+            <div class="step-desc">Box & dokumen</div>
+        </div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step" style="border-color:#6366f1">
+            <div class="step-label">🚚 Dikirim</div>
+            <div class="step-desc">Ke repository</div>
+        </div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step" style="border-color:#8b5cf6">
+            <div class="step-label">📦 Tersimpan</div>
+            <div class="step-desc">Di repository</div>
+        </div>
+    </div>
+
+    <h3>Alur Role & Akses</h3>
+    <div class="flow-lanes">
+        <div class="flow-lane" style="border-color:#7c3aed">
+            <div class="flow-lane-title" style="color:#7c3aed">👑 Super Admin</div>
+            <div class="flow-step" style="border-color:#7c3aed;min-width:auto;margin:4px 0">
+                <div class="step-label" style="font-size:9px">Manajemen User</div>
+            </div>
+            <div class="flow-step" style="border-color:#7c3aed;min-width:auto;margin:4px 0">
+                <div class="step-label" style="font-size:9px">Manajemen Divisi</div>
+            </div>
+            <div class="flow-step" style="border-color:#7c3aed;min-width:auto;margin:4px 0">
+                <div class="step-label" style="font-size:9px">Approve Pengajuan</div>
+            </div>
+            <div class="flow-step" style="border-color:#7c3aed;min-width:auto;margin:4px 0">
+                <div class="step-label" style="font-size:9px">Kelola Pengiriman</div>
+            </div>
+            <div class="flow-step" style="border-color:#7c3aed;min-width:auto;margin:4px 0">
+                <div class="step-label" style="font-size:9px">Laporan & Export</div>
+            </div>
+        </div>
+        <div class="flow-lane" style="border-color:#2563eb">
+            <div class="flow-lane-title" style="color:#2563eb">🛡️ Administrator</div>
+            <div class="flow-step" style="border-color:#2563eb;min-width:auto;margin:4px 0">
+                <div class="step-label" style="font-size:9px">Approve Pengajuan</div>
+            </div>
+            <div class="flow-step" style="border-color:#2563eb;min-width:auto;margin:4px 0">
+                <div class="step-label" style="font-size:9px">Approve Peminjaman</div>
+            </div>
+            <div class="flow-step" style="border-color:#2563eb;min-width:auto;margin:4px 0">
+                <div class="step-label" style="font-size:9px">Kelola Pengiriman</div>
+            </div>
+            <div class="flow-step" style="border-color:#2563eb;min-width:auto;margin:4px 0">
+                <div class="step-label" style="font-size:9px">Manajemen Divisi</div>
+            </div>
+            <div class="flow-step" style="border-color:#2563eb;min-width:auto;margin:4px 0">
+                <div class="step-label" style="font-size:9px">Laporan & Export</div>
+            </div>
+        </div>
+        <div class="flow-lane" style="border-color:#059669">
+            <div class="flow-lane-title" style="color:#059669">👤 User Divisi</div>
+            <div class="flow-step" style="border-color:#059669;min-width:auto;margin:4px 0">
+                <div class="step-label" style="font-size:9px">Buat Pengajuan</div>
+            </div>
+            <div class="flow-step" style="border-color:#059669;min-width:auto;margin:4px 0">
+                <div class="step-label" style="font-size:9px">Input Data Box</div>
+            </div>
+            <div class="flow-step" style="border-color:#059669;min-width:auto;margin:4px 0">
+                <div class="step-label" style="font-size:9px">Ajukan Peminjaman</div>
+            </div>
+            <div class="flow-step" style="border-color:#059669;min-width:auto;margin:4px 0">
+                <div class="step-label" style="font-size:9px">Lihat Laporan</div>
+            </div>
+            <div class="flow-step" style="border-color:#059669;min-width:auto;margin:4px 0">
+                <div class="step-label" style="font-size:9px;color:#9ca3af">(Divisi Sendiri)</div>
+            </div>
+        </div>
+    </div>
 </section>
 
 <!-- ============================================================
