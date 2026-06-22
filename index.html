@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en" style="">
+<head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>PTPN IV - Dashboard Divisi Umum</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;family=JetBrains+Mono:wght@500;600&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "error": "#ba1a1a",
+                        "surface-variant": "#dfe3e4",
+                        "on-background": "#171c1d",
+                        "on-secondary-container": "#586c00",
+                        "tertiary": "#15656e",
+                        "surface-container-low": "#f0f4f5",
+                        "on-tertiary-fixed": "#001f23",
+                        "surface-container": "#eaefef",
+                        "on-primary-fixed-variant": "#004f57",
+                        "inverse-primary": "#6dd5e4",
+                        "tertiary-fixed": "#a8eef8",
+                        "on-tertiary-container": "#f6feff",
+                        "background": "#f6fafb",
+                        "surface-bright": "#f6fafb",
+                        "primary": "#006670",
+                        "on-error": "#ffffff",
+                        "surface": "#f6fafb",
+                        "secondary-fixed-dim": "#b6d250",
+                        "on-surface": "#171c1d",
+                        "outline-variant": "#bdc9cb",
+                        "inverse-on-surface": "#edf1f2",
+                        "on-surface-variant": "#3d494b",
+                        "on-primary-container": "#f7feff",
+                        "secondary": "#536600",
+                        "secondary-fixed": "#d2ef69",
+                        "surface-container-high": "#e4e9ea",
+                        "primary-fixed-dim": "#6dd5e4",
+                        "on-secondary-fixed": "#171e00",
+                        "on-tertiary-fixed-variant": "#004f57",
+                        "inverse-surface": "#2c3132",
+                        "surface-tint": "#006973",
+                        "error-container": "#ffdad6",
+                        "on-primary-fixed": "#001f23",
+                        "primary-fixed": "#93f1ff",
+                        "surface-dim": "#d6dbdb",
+                        "surface-container-highest": "#dfe3e4",
+                        "tertiary-fixed-dim": "#8cd2dc",
+                        "primary-container": "#00818e",
+                        "on-tertiary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "tertiary-container": "#367e88",
+                        "surface-container-lowest": "#ffffff",
+                        "outline": "#6d797b",
+                        "on-secondary-fixed-variant": "#3e4c00",
+                        "on-secondary": "#ffffff",
+                        "secondary-container": "#d2ef69",
+                        "on-primary": "#ffffff"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    spacing: {
+                        "card-gap": "20px",
+                        "gutter": "16px",
+                        "container-padding": "24px",
+                        "unit": "4px"
+                    },
+                    fontFamily: {
+                        "label-sm": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "financial-sm": ["JetBrains Mono"],
+                        "body-base": ["Inter"],
+                        "financial-lg": ["JetBrains Mono"]
+                    },
+                    fontSize: {
+                        "label-sm": ["13px", { lineHeight: "18px", fontWeight: "500" }],
+                        "headline-md": ["24px", { lineHeight: "32px", letterSpacing: "-0.01em", fontWeight: "600" }],
+                        "display-lg": ["32px", { lineHeight: "40px", letterSpacing: "-0.02em", fontWeight: "700" }],
+                        "financial-sm": ["14px", { lineHeight: "20px", fontWeight: "500" }],
+                        "body-base": ["16px", { lineHeight: "24px", fontWeight: "400" }],
+                        "financial-lg": ["20px", { lineHeight: "28px", fontWeight: "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .category-pesawat { background-color: #38bdf8; }
+        .category-hotel { background-color: #a78bfa; }
+        .category-kereta { background-color: #fbbf24; }
+        .category-mobil { background-color: #34d399; }
+        .category-per-diem { background-color: #f472b6; }
+        .category-trans-lokal { background-color: #94a3b8; }
+        .category-transport { background-color: #fb923c; }
+        .category-laundry { background-color: #2dd4bf; }
+        
+        .text-category-pesawat { color: #38bdf8; }
+        .text-category-hotel { color: #a78bfa; }
+        .text-category-kereta { color: #fbbf24; }
+        .text-category-mobil { color: #34d399; }
+        .text-category-per-diem { color: #f472b6; }
+        .text-category-trans-lokal { color: #94a3b8; }
+        .text-category-transport { color: #fb923c; }
+        .text-category-laundry { color: #2dd4bf; }
+
+        /* Sidebar active state */
+        .nav-link {
+            transition: all 0.2s ease;
+            border-left: 4px solid transparent;
+        }
+        .nav-link:hover {
+            color: white !important;
+            background: rgba(13, 148, 136, 0.2);
+        }
+        .nav-link.active {
+            color: #b6d250 !important;
+            border-left-color: #b6d250;
+            background: rgba(13, 148, 136, 0.2);
+        }
+        .nav-link.active span:first-child {
+            color: #b6d250;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-base text-body-base antialiased flex">
+
+<!-- ============================================================
+     SIDEBAR NAVIGATION (Shared across all pages)
+     ============================================================ -->
+<nav class="bg-[#0c616a] dark:bg-slate-950 fixed h-screen w-[260px] left-0 top-0 border-r border-teal-900/20 shadow-xl flex flex-col pt-6 pb-4 z-50">
+    <!-- Logo -->
+    <div class="px-6 mb-8 pt-6">
+        <h1 class="font-display-lg text-[20px] font-black tracking-tight text-white leading-tight uppercase">PTPN IV</h1>
+        <p class="font-label-sm text-[12px] tracking-wide text-teal-200/70 mt-1">Agro-Corporate Portal</p>
+    </div>
+
+    <!-- Navigation Links -->
+    <div class="flex flex-col gap-1 flex-1 font-inter text-sm tracking-wide">
+        <!-- Dashboard (Active on this page) -->
+        <a class="nav-link active flex items-center gap-4 px-6 py-4 text-white/70" href="index.html">
+            <span class="material-symbols-outlined">dashboard</span>
+            <span class="font-semibold">Dashboard</span>
+        </a>
+        <!-- Input Data -->
+        <a class="nav-link flex items-center gap-4 px-6 py-4 text-white/70" href="input.html">
+            <span class="material-symbols-outlined">edit_note</span>
+            <span class="">Input Data</span>
+        </a>
+        <!-- Upload Data -->
+        <a class="nav-link flex items-center gap-4 px-6 py-4 text-white/70" href="upload.html">
+            <span class="material-symbols-outlined">cloud_upload</span>
+            <span class="">Upload Data</span>
+        </a>
+        <!-- Laporan -->
+        <a class="nav-link flex items-center gap-4 px-6 py-4 text-white/70" href="laporan.html">
+            <span class="material-symbols-outlined">description</span>
+            <span class="">Laporan</span>
+        </a>
+        <!-- RKAP -->
+        <a class="nav-link flex items-center gap-4 px-6 py-4 text-white/70" href="rkap.html">
+            <span class="material-symbols-outlined">account_balance_wallet</span>
+            <span class="">RKAP</span>
+        </a>
+        <!-- Pengaturan -->
+        <a class="nav-link flex items-center gap-4 px-6 py-4 text-white/70" href="pengaturan.html">
+            <span class="material-symbols-outlined">settings</span>
+            <span class="">Pengaturan</span>
+        </a>
+    </div>
+
+    <!-- User Profile -->
+    <div class="mt-auto p-6 border-t border-teal-900/50">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full overflow-hidden border border-teal-800 flex items-center justify-center bg-teal-700 text-white font-bold text-sm">
+                BS
+            </div>
+            <div class="flex flex-col">
+                <span class="text-white font-bold text-[14px] leading-tight">Budi Santoso</span>
+                <span class="text-teal-200/70 text-[11px]">Finance Director</span>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- ============================================================
+     MAIN CONTENT AREA
+     ============================================================ -->
+<main class="flex-1 ml-[260px] min-h-screen flex flex-col">
+    <!-- Top Nav Bar -->
+    <header class="bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800 shadow-[0_2px_12px_rgba(12,97,106,0.08)] flex justify-between items-center px-6 h-16 w-full sticky top-0 z-40 font-inter antialiased text-sm font-medium">
+        <div class="text-xl font-bold text-teal-800 dark:text-teal-200">
+            DIVISI UMUM
+        </div>
+        <div class="flex items-center gap-4">
+            <div class="relative hidden md:block">
+                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
+                <input class="pl-10 pr-4 py-1.5 rounded-full bg-surface-container-low border-none text-sm focus:ring-2 focus:ring-primary-container outline-none w-64 text-on-surface" placeholder="Search..." type="text">
+            </div>
+            <div class="flex items-center gap-2 text-slate-500 dark:text-slate-400">
+                <button class="p-2 rounded-full hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors active:scale-95 duration-150 flex items-center justify-center">
+                    <span class="material-symbols-outlined">notifications</span>
+                </button>
+                <button class="p-2 rounded-full hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors active:scale-95 duration-150 flex items-center justify-center">
+                    <span class="material-symbols-outlined">settings</span>
+                </button>
+                <button class="p-2 rounded-full hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors active:scale-95 duration-150 flex items-center justify-center">
+                    <span class="material-symbols-outlined">help</span>
+                </button>
+            </div>
+            <div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container font-bold overflow-hidden border-2 border-surface-container-lowest text-xs">
+                BS
+            </div>
+        </div>
+    </header>
+
+    <!-- Dashboard Content -->
+    <div class="p-container-padding flex flex-col gap-card-gap">
+
+        <!-- Sticky Filter Bar -->
+        <div class="bg-surface-container-lowest rounded-xl shadow-[0_2px_12px_rgba(12,97,106,0.08)] p-4 flex flex-wrap items-center gap-4 sticky top-[84px] z-30 border border-outline-variant/30">
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-outline">filter_list</span>
+                <span class="font-label-sm text-label-sm text-on-surface-variant font-semibold">Filter Data:</span>
+            </div>
+            <select class="bg-surface border border-outline-variant rounded-lg px-3 py-2 text-label-sm font-label-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none min-w-[200px]">
+                <option value="">Semua Divisi</option>
+                <option value="DSPN">DSPN - Sekretariat Perusahaan</option>
+                <option value="DTPI">DTPI - Satuan Pengawasan Intern</option>
+                <option value="DTAN">DTAN - Divisi Tanaman</option>
+                <option value="DTPL">DTPL - Teknik &amp; Pengolahan</option>
+                <option value="DINF">DINF - Infrastruktur</option>
+                <option value="DITN">DITN - Investasi Tanaman</option>
+                <option value="DPSN">DPSN - Pemasaran</option>
+                <option value="DRPL">DRPL - Rantai Pasok &amp; Logistik</option>
+                <option value="DPEN">DPEN - Pengadaan</option>
+                <option value="DSKP">DSKP - Strategi Perusahaan &amp; Kinerja AP</option>
+                <option value="DSMS">DSMS - Sistem Manajemen &amp; Sustainability</option>
+                <option value="DRPH">DRPH - Riset &amp; Pengembangan Bisnis</option>
+                <option value="DKSH">DKSH - Keuangan Strategis &amp; Hubungan Investor</option>
+                <option value="DPBA">DPBA - Perbendaharaan &amp; Anggaran</option>
+                <option value="DAPN">DAPN - Akuntansi &amp; Perpajakan</option>
+                <option value="DMRS">DMRS - Manajemen Risiko</option>
+                <option value="DPSB">DPSB - Pengembangan SDM dan Budaya</option>
+                <option value="DSDM">DSDM - Operasional SDM</option>
+                <option value="DHPU">DHPU - HPS &amp; Umum</option>
+                <option value="DTIS">DTIS - Teknologi Informasi</option>
+                <option value="DHKT">DHKT - Hubungan Kelembagaan &amp; TJSL</option>
+                <option value="DHKM">DHKM - Hukum</option>
+                <option value="DPSR">DPSR - PSR dan Plasma</option>
+                <option value="DPMO">DPMO - Project Management Office</option>
+            </select>
+            <select class="bg-surface border border-outline-variant rounded-lg px-3 py-2 text-label-sm font-label-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none min-w-[120px]">
+                <option>Semua Bulan</option>
+                <option>Januari</option>
+                <option>Februari</option>
+                <option>Maret</option>
+            </select>
+            <select class="bg-surface border border-outline-variant rounded-lg px-3 py-2 text-label-sm font-label-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none min-w-[100px]">
+                <option>2026</option>
+                <option>2025</option>
+                <option>2024</option>
+            </select>
+            <button class="ml-auto bg-primary text-on-primary px-6 py-2 rounded-lg font-label-sm text-label-sm font-medium hover:bg-primary/90 transition-colors shadow-sm">
+                Terapkan
+            </button>
+        </div>
+
+        <!-- KPI Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-card-gap">
+            <!-- Total Pengeluaran -->
+            <div class="bg-surface-container-lowest rounded-xl shadow-[0_2px_12px_rgba(12,97,106,0.08)] p-5 border-t-4 border-primary">
+                <p class="font-label-sm text-label-sm text-on-surface-variant mb-1">Total Pengeluaran</p>
+                <h2 class="font-financial-lg text-financial-lg text-on-surface text-[28px] leading-tight mb-2">Rp 1.25B</h2>
+                <div class="flex items-center gap-1 text-emerald-600 font-label-sm text-[12px]">
+                    <span class="material-symbols-outlined text-[16px]">trending_up</span>
+                    <span>+8.2% vs last month</span>
+                </div>
+            </div>
+            <!-- Jumlah Perjalanan -->
+            <div class="bg-surface-container-lowest rounded-xl shadow-[0_2px_12px_rgba(12,97,106,0.08)] p-5 border-t-4 border-secondary-fixed-dim">
+                <p class="font-label-sm text-label-sm text-on-surface-variant mb-1">Jumlah Perjalanan</p>
+                <h2 class="font-financial-lg text-financial-lg text-on-surface text-[28px] leading-tight mb-2">342</h2>
+                <div class="flex items-center gap-1 text-emerald-600 font-label-sm text-[12px]">
+                    <span class="material-symbols-outlined text-[16px]">trending_up</span>
+                    <span>+12 perjalanan</span>
+                </div>
+            </div>
+            <!-- Rata-rata per Divisi -->
+            <div class="bg-surface-container-lowest rounded-xl shadow-[0_2px_12px_rgba(12,97,106,0.08)] p-5 border-t-4 border-tertiary">
+                <p class="font-label-sm text-label-sm text-on-surface-variant mb-1">Rata-rata per Divisi</p>
+                <h2 class="font-financial-lg text-financial-lg text-on-surface text-[28px] leading-tight mb-2">Rp 52.0M</h2>
+                <div class="flex items-center gap-1 text-error font-label-sm text-[12px]">
+                    <span class="material-symbols-outlined text-[16px]">trending_down</span>
+                    <span>-2.1% vs last month</span>
+                </div>
+            </div>
+            <!-- Trend -->
+            <div class="bg-surface-container-lowest rounded-xl shadow-[0_2px_12px_rgba(12,97,106,0.08)] p-5 border-t-4 border-inverse-primary">
+                <p class="font-label-sm text-label-sm text-on-surface-variant mb-1">Overall Trend</p>
+                <h2 class="font-financial-lg text-financial-lg text-on-surface text-[28px] leading-tight mb-2">+12.5%</h2>
+                <div class="flex items-center gap-1 text-on-surface-variant font-label-sm text-[12px]">
+                    <span class="material-symbols-outlined text-[16px]">info</span>
+                    <span>Year to date</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chart Section Row -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-card-gap">
+            <!-- Stacked Bar Chart -->
+            <div class="lg:col-span-2 bg-surface-container-lowest rounded-xl shadow-[0_2px_12px_rgba(12,97,106,0.08)] p-6">
+                <div class="flex justify-between items-center mb-6 pb-4 border-b border-surface-variant">
+                    <h3 class="font-headline-md text-[18px] text-on-surface">Komposisi Biaya per Divisi</h3>
+                    <button class="text-outline hover:text-primary"><span class="material-symbols-outlined">more_vert</span></button>
+                </div>
+                <div class="h-[280px] w-full flex items-end gap-4 pb-8 relative">
+                    <!-- Y-Axis labels -->
+                    <div class="absolute left-0 top-0 h-full flex flex-col justify-between text-[10px] text-outline font-financial-sm py-4">
+                        <span>100M</span><span>75M</span><span>50M</span><span>25M</span><span>0</span>
+                    </div>
+                    <!-- Grid lines -->
+                    <div class="absolute left-8 right-0 top-4 bottom-8 flex flex-col justify-between pointer-events-none">
+                        <div class="border-t border-outline-variant/20 w-full"></div>
+                        <div class="border-t border-outline-variant/20 w-full"></div>
+                        <div class="border-t border-outline-variant/20 w-full"></div>
+                        <div class="border-t border-outline-variant/20 w-full"></div>
+                        <div class="border-t border-outline-variant/60 w-full"></div>
+                    </div>
+                    <!-- Bars -->
+                    <div class="flex-1 flex items-end justify-center ml-8 gap-4 z-10">
+                        <div class="w-12 h-[80%] flex flex-col justify-end group relative cursor-pointer">
+                            <div class="w-full h-[20%] category-pesawat rounded-t-sm"></div>
+                            <div class="w-full h-[30%] category-hotel"></div>
+                            <div class="w-full h-[10%] category-kereta"></div>
+                            <div class="w-full h-[40%] category-per-diem rounded-b-sm"></div>
+                            <span class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[11px] font-label-sm text-on-surface-variant">Div 1</span>
+                        </div>
+                        <div class="w-12 h-[60%] flex flex-col justify-end group relative cursor-pointer">
+                            <div class="w-full h-[40%] category-pesawat rounded-t-sm"></div>
+                            <div class="w-full h-[20%] category-mobil"></div>
+                            <div class="w-full h-[40%] category-trans-lokal rounded-b-sm"></div>
+                            <span class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[11px] font-label-sm text-on-surface-variant">Div 2</span>
+                        </div>
+                        <div class="w-12 h-[90%] flex flex-col justify-end group relative cursor-pointer">
+                            <div class="w-full h-[15%] category-transport rounded-t-sm"></div>
+                            <div class="w-full h-[35%] category-hotel"></div>
+                            <div class="w-full h-[15%] category-laundry"></div>
+                            <div class="w-full h-[35%] category-per-diem rounded-b-sm"></div>
+                            <span class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[11px] font-label-sm text-on-surface-variant">Div 3</span>
+                        </div>
+                        <div class="w-12 h-[45%] flex flex-col justify-end group relative cursor-pointer">
+                            <div class="w-full h-[50%] category-kereta rounded-t-sm"></div>
+                            <div class="w-full h-[50%] category-mobil rounded-b-sm"></div>
+                            <span class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[11px] font-label-sm text-on-surface-variant">Div 4</span>
+                        </div>
+                        <div class="w-12 h-[75%] flex flex-col justify-end group relative cursor-pointer">
+                            <div class="w-full h-[25%] category-pesawat rounded-t-sm"></div>
+                            <div class="w-full h-[25%] category-hotel"></div>
+                            <div class="w-full h-[25%] category-trans-lokal"></div>
+                            <div class="w-full h-[25%] category-per-diem rounded-b-sm"></div>
+                            <span class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[11px] font-label-sm text-on-surface-variant">Div 5</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Donut Chart -->
+            <div class="bg-surface-container-lowest rounded-xl shadow-[0_2px_12px_rgba(12,97,106,0.08)] p-6 flex flex-col">
+                <div class="flex justify-between items-center mb-6 pb-4 border-b border-surface-variant">
+                    <h3 class="font-headline-md text-[18px] text-on-surface">Porsi Biaya</h3>
+                    <button class="text-outline hover:text-primary"><span class="material-symbols-outlined">more_vert</span></button>
+                </div>
+                <div class="flex-1 flex flex-col items-center justify-center">
+                    <div class="w-48 h-48 rounded-full relative" style="background: conic-gradient(
+                        #38bdf8 0% 30%, 
+                        #a78bfa 30% 55%, 
+                        #f472b6 55% 75%, 
+                        #34d399 75% 85%, 
+                        #fbbf24 85% 92%, 
+                        #94a3b8 92% 96%, 
+                        #fb923c 96% 98%, 
+                        #2dd4bf 98% 100%
+                    );">
+                        <div class="absolute inset-4 bg-surface-container-lowest rounded-full flex items-center justify-center flex-col">
+                            <span class="font-financial-lg text-financial-lg text-on-surface text-[20px]">Rp 1.25B</span>
+                            <span class="font-label-sm text-[10px] text-outline">Total</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Category Detail Cards -->
+        <div class="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-8 gap-3">
+            <div class="bg-surface-container-lowest rounded-xl p-3 shadow-sm border border-outline-variant/30 flex flex-col gap-2 hover:shadow-md transition-shadow">
+                <div class="w-9 h-9 rounded-full bg-sky-100 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-sky-500 text-[20px]">flight</span>
+                </div>
+                <span class="font-label-sm text-[11px] font-semibold text-on-surface">Pesawat</span>
+                <div class="font-financial-sm text-[14px] text-on-surface font-bold">Rp 375M</div>
+                <div class="text-[10px] font-label-sm text-emerald-600 flex items-center"><span class="material-symbols-outlined text-[12px]">arrow_drop_up</span> 12%</div>
+            </div>
+            <div class="bg-surface-container-lowest rounded-xl p-3 shadow-sm border border-outline-variant/30 flex flex-col gap-2 hover:shadow-md transition-shadow">
+                <div class="w-9 h-9 rounded-full bg-purple-100 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-purple-500 text-[20px]">hotel</span>
+                </div>
+                <span class="font-label-sm text-[11px] font-semibold text-on-surface">Hotel</span>
+                <div class="font-financial-sm text-[14px] text-on-surface font-bold">Rp 312M</div>
+                <div class="text-[10px] font-label-sm text-emerald-600 flex items-center"><span class="material-symbols-outlined text-[12px]">arrow_drop_up</span> 8%</div>
+            </div>
+            <div class="bg-surface-container-lowest rounded-xl p-3 shadow-sm border border-outline-variant/30 flex flex-col gap-2 hover:shadow-md transition-shadow">
+                <div class="w-9 h-9 rounded-full bg-yellow-100 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-yellow-500 text-[20px]">train</span>
+                </div>
+                <span class="font-label-sm text-[11px] font-semibold text-on-surface">Kereta</span>
+                <div class="font-financial-sm text-[14px] text-on-surface font-bold">Rp 87M</div>
+                <div class="text-[10px] font-label-sm text-error flex items-center"><span class="material-symbols-outlined text-[12px]">arrow_drop_down</span> 3%</div>
+            </div>
+            <div class="bg-surface-container-lowest rounded-xl p-3 shadow-sm border border-outline-variant/30 flex flex-col gap-2 hover:shadow-md transition-shadow">
+                <div class="w-9 h-9 rounded-full bg-emerald-100 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-emerald-500 text-[20px]">directions_car</span>
+                </div>
+                <span class="font-label-sm text-[11px] font-semibold text-on-surface">Mobil</span>
+                <div class="font-financial-sm text-[14px] text-on-surface font-bold">Rp 125M</div>
+                <div class="text-[10px] font-label-sm text-emerald-600 flex items-center"><span class="material-symbols-outlined text-[12px]">arrow_drop_up</span> 5%</div>
+            </div>
+            <div class="bg-surface-container-lowest rounded-xl p-3 shadow-sm border border-outline-variant/30 flex flex-col gap-2 hover:shadow-md transition-shadow">
+                <div class="w-9 h-9 rounded-full bg-pink-100 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-pink-500 text-[20px]">payments</span>
+                </div>
+                <span class="font-label-sm text-[11px] font-semibold text-on-surface">Per Diem</span>
+                <div class="font-financial-sm text-[14px] text-on-surface font-bold">Rp 250M</div>
+                <div class="text-[10px] font-label-sm text-emerald-600 flex items-center"><span class="material-symbols-outlined text-[12px]">arrow_drop_up</span> 15%</div>
+            </div>
+            <div class="bg-surface-container-lowest rounded-xl p-3 shadow-sm border border-outline-variant/30 flex flex-col gap-2 hover:shadow-md transition-shadow">
+                <div class="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-slate-500 text-[20px]">local_taxi</span>
+                </div>
+                <span class="font-label-sm text-[11px] font-semibold text-on-surface">Trans Lokal</span>
+                <div class="font-financial-sm text-[14px] text-on-surface font-bold">Rp 50M</div>
+                <div class="text-[10px] font-label-sm text-outline flex items-center"><span class="material-symbols-outlined text-[12px]">remove</span> 0%</div>
+            </div>
+            <div class="bg-surface-container-lowest rounded-xl p-3 shadow-sm border border-outline-variant/30 flex flex-col gap-2 hover:shadow-md transition-shadow">
+                <div class="w-9 h-9 rounded-full bg-orange-100 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-orange-500 text-[20px]">airport_shuttle</span>
+                </div>
+                <span class="font-label-sm text-[11px] font-semibold text-on-surface">Transport</span>
+                <div class="font-financial-sm text-[14px] text-on-surface font-bold">Rp 25M</div>
+                <div class="text-[10px] font-label-sm text-error flex items-center"><span class="material-symbols-outlined text-[12px]">arrow_drop_down</span> 1%</div>
+            </div>
+            <div class="bg-surface-container-lowest rounded-xl p-3 shadow-sm border border-outline-variant/30 flex flex-col gap-2 hover:shadow-md transition-shadow">
+                <div class="w-9 h-9 rounded-full bg-teal-100 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-teal-500 text-[20px]">dry_cleaning</span>
+                </div>
+                <span class="font-label-sm text-[11px] font-semibold text-on-surface">Laundry</span>
+                <div class="font-financial-sm text-[14px] text-on-surface font-bold">Rp 26M</div>
+                <div class="text-[10px] font-label-sm text-emerald-600 flex items-center"><span class="material-symbols-outlined text-[12px]">arrow_drop_up</span> 2%</div>
+            </div>
+        </div>
+
+        <!-- Table Breakdown -->
+        <div class="bg-surface-container-lowest rounded-xl shadow-[0_2px_12px_rgba(12,97,106,0.08)] overflow-hidden">
+            <div class="p-5 border-b border-surface-variant flex justify-between items-center bg-surface-bright">
+                <h3 class="font-headline-md text-[18px] text-on-surface">Detail Pengeluaran per Divisi</h3>
+                <button class="flex items-center gap-2 text-label-sm font-label-sm text-primary hover:text-primary-container px-3 py-1 rounded-md hover:bg-surface transition-colors">
+                    <span class="material-symbols-outlined text-[18px]">download</span> Export CSV
+                </button>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse min-w-[1000px]">
+                    <thead>
+                        <tr class="bg-surface-container-low border-b border-outline-variant/50">
+                            <th class="py-3 px-5 text-label-sm font-label-sm text-on-surface-variant font-semibold">Divisi</th>
+                            <th class="py-3 px-4 text-label-sm font-label-sm text-on-surface-variant text-right">Pesawat</th>
+                            <th class="py-3 px-4 text-label-sm font-label-sm text-on-surface-variant text-right">Hotel</th>
+                            <th class="py-3 px-4 text-label-sm font-label-sm text-on-surface-variant text-right">Kereta</th>
+                            <th class="py-3 px-4 text-label-sm font-label-sm text-on-surface-variant text-right">Mobil</th>
+                            <th class="py-3 px-4 text-label-sm font-label-sm text-on-surface-variant text-right">Per Diem</th>
+                            <th class="py-3 px-4 text-label-sm font-label-sm text-on-surface-variant text-right">T. Lokal</th>
+                            <th class="py-3 px-4 text-label-sm font-label-sm text-on-surface-variant text-right">Transpt</th>
+                            <th class="py-3 px-4 text-label-sm font-label-sm text-on-surface-variant text-right">Laundry</th>
+                            <th class="py-3 px-5 text-label-sm font-label-sm text-on-surface font-bold text-right bg-surface-container">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody class="font-financial-sm text-[13px] text-on-surface">
+                        <tr class="border-b border-surface-variant hover:bg-surface/50 transition-colors">
+                            <td class="py-3 px-5 font-label-sm font-medium">Divisi 1 - Agronomi</td>
+                            <td class="py-3 px-4 text-right">120M</td>
+                            <td class="py-3 px-4 text-right">95M</td>
+                            <td class="py-3 px-4 text-right">15M</td>
+                            <td class="py-3 px-4 text-right">40M</td>
+                            <td class="py-3 px-4 text-right">80M</td>
+                            <td class="py-3 px-4 text-right">10M</td>
+                            <td class="py-3 px-4 text-right">5M</td>
+                            <td class="py-3 px-4 text-right">8M</td>
+                            <td class="py-3 px-5 text-right font-bold bg-surface-container-low/50">373M</td>
+                        </tr>
+                        <tr class="border-b border-surface-variant hover:bg-surface/50 transition-colors">
+                            <td class="py-3 px-5 font-label-sm font-medium">Divisi 2 - Teknik</td>
+                            <td class="py-3 px-4 text-right">85M</td>
+                            <td class="py-3 px-4 text-right">110M</td>
+                            <td class="py-3 px-4 text-right">25M</td>
+                            <td class="py-3 px-4 text-right">35M</td>
+                            <td class="py-3 px-4 text-right">60M</td>
+                            <td class="py-3 px-4 text-right">15M</td>
+                            <td class="py-3 px-4 text-right">8M</td>
+                            <td class="py-3 px-4 text-right">5M</td>
+                            <td class="py-3 px-5 text-right font-bold bg-surface-container-low/50">343M</td>
+                        </tr>
+                        <tr class="border-b border-surface-variant hover:bg-surface/50 transition-colors">
+                            <td class="py-3 px-5 font-label-sm font-medium">Divisi 3 - Keuangan</td>
+                            <td class="py-3 px-4 text-right">150M</td>
+                            <td class="py-3 px-4 text-right">80M</td>
+                            <td class="py-3 px-4 text-right">10M</td>
+                            <td class="py-3 px-4 text-right">20M</td>
+                            <td class="py-3 px-4 text-right">70M</td>
+                            <td class="py-3 px-4 text-right">12M</td>
+                            <td class="py-3 px-4 text-right">4M</td>
+                            <td class="py-3 px-4 text-right">6M</td>
+                            <td class="py-3 px-5 text-right font-bold bg-surface-container-low/50">352M</td>
+                        </tr>
+                        <tr class="border-b border-surface-variant hover:bg-surface/50 transition-colors">
+                            <td class="py-3 px-5 font-label-sm font-medium">Divisi 4 - SDM</td>
+                            <td class="py-3 px-4 text-right">20M</td>
+                            <td class="py-3 px-4 text-right">27M</td>
+                            <td class="py-3 px-4 text-right">37M</td>
+                            <td class="py-3 px-4 text-right">30M</td>
+                            <td class="py-3 px-4 text-right">40M</td>
+                            <td class="py-3 px-4 text-right">13M</td>
+                            <td class="py-3 px-4 text-right">8M</td>
+                            <td class="py-3 px-4 text-right">7M</td>
+                            <td class="py-3 px-5 text-right font-bold bg-surface-container-low/50">182M</td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr class="bg-surface border-t-2 border-outline-variant font-bold text-[14px]">
+                            <td class="py-4 px-5 text-primary">Total Keseluruhan</td>
+                            <td class="py-4 px-4 text-right">375M</td>
+                            <td class="py-4 px-4 text-right">312M</td>
+                            <td class="py-4 px-4 text-right">87M</td>
+                            <td class="py-4 px-4 text-right">125M</td>
+                            <td class="py-4 px-4 text-right">250M</td>
+                            <td class="py-4 px-4 text-right">50M</td>
+                            <td class="py-4 px-4 text-right">25M</td>
+                            <td class="py-4 px-4 text-right">26M</td>
+                            <td class="py-4 px-5 text-right text-primary text-[16px] bg-surface-container">1.25B</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+
+    </div><!-- end dashboard content -->
+</main>
+
+</body>
+</html>

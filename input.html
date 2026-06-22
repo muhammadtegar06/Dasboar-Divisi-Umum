@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Form Input Data Perjalanan Dinas - Dashboard Umum PTPN IV">
+    <title>Input Data Perjalanan Dinas — PTPN IV</title>
+    <link rel="stylesheet" href="css/input-form.css">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js"></script>
+    <style>
+        /* Sidebar styles for input page */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 260px;
+            height: 100vh;
+            background: #0c616a;
+            display: flex;
+            flex-direction: column;
+            padding-top: 24px;
+            padding-bottom: 16px;
+            z-index: 50;
+            box-shadow: 2px 0 16px rgba(12,97,106,0.15);
+        }
+        .sidebar-logo {
+            padding: 24px 24px 32px;
+        }
+        .sidebar-logo h1 {
+            font-size: 20px;
+            font-weight: 900;
+            color: white;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin: 0;
+        }
+        .sidebar-logo p {
+            font-size: 12px;
+            color: rgba(167, 238, 248, 0.6);
+            margin: 4px 0 0;
+            letter-spacing: 1px;
+        }
+        .sidebar-nav {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 14px 24px;
+            color: rgba(255,255,255,0.65);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            border-left: 4px solid transparent;
+            transition: all 0.2s ease;
+        }
+        .sidebar-link:hover {
+            color: white;
+            background: rgba(13, 148, 136, 0.2);
+        }
+        .sidebar-link.active {
+            color: #b6d250;
+            border-left-color: #b6d250;
+            background: rgba(13, 148, 136, 0.2);
+        }
+        .sidebar-link .material-symbols-outlined {
+            font-size: 22px;
+        }
+        .sidebar-user {
+            margin-top: auto;
+            padding: 20px 24px;
+            border-top: 1px solid rgba(13, 148, 136, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .sidebar-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #1594a2;
+            color: white;
+            font-weight: 700;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .sidebar-user-name {
+            color: white;
+            font-weight: 700;
+            font-size: 14px;
+            line-height: 1.2;
+        }
+        .sidebar-user-role {
+            color: rgba(167, 238, 248, 0.6);
+            font-size: 11px;
+        }
+
+        /* Offset content for sidebar */
+        .main-with-sidebar {
+            margin-left: 260px;
+        }
+
+        @media (max-width: 900px) {
+            .sidebar { display: none; }
+            .main-with-sidebar { margin-left: 0; }
+        }
+
+        /* GL Dropdown styles */
+        .gl-option { padding: 10px 14px; font-size: 13px; cursor: pointer; border-bottom: 1px solid #f0f4f5; transition: background 0.15s; }
+        .gl-option:hover { background: #f0f4f5; color: #1594a2; }
+        .gl-option.selected { background: #1594a2; color: white; }
+        #glDropdownList::-webkit-scrollbar { width: 6px; }
+        #glDropdownList::-webkit-scrollbar-track { background: #f0f4f5; }
+        #glDropdownList::-webkit-scrollbar-thumb { background: #1594a2; border-radius: 3px; }
+    </style>
+</head>
+<body>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- ============================================================
+     SIDEBAR NAVIGATION
+     ============================================================ -->
+<nav class="sidebar">
+    <div class="sidebar-logo">
+        <h1>PTPN IV</h1>
+        <p>Agro-Corporate Portal</p>
+    </div>
+    <div class="sidebar-nav">
+        <a class="sidebar-link" href="index.html">
+            <span class="material-symbols-outlined">dashboard</span>
+            <span>Dashboard</span>
+        </a>
+        <a class="sidebar-link active" href="input.html">
+            <span class="material-symbols-outlined">edit_note</span>
+            <span>Input Data</span>
+        </a>
+        <a class="sidebar-link" href="upload.html">
+            <span class="material-symbols-outlined">cloud_upload</span>
+            <span>Upload Data</span>
+        </a>
+        <a class="sidebar-link" href="laporan.html">
+            <span class="material-symbols-outlined">description</span>
+            <span>Laporan</span>
+        </a>
+        <a class="sidebar-link" href="rkap.html">
+            <span class="material-symbols-outlined">account_balance_wallet</span>
+            <span>RKAP</span>
+        </a>
+        <a class="sidebar-link" href="pengaturan.html">
+            <span class="material-symbols-outlined">settings</span>
+            <span>Pengaturan</span>
+        </a>
+    </div>
+    <div class="sidebar-user">
+        <div class="sidebar-avatar">BS</div>
+        <div>
+            <div class="sidebar-user-name">Budi Santoso</div>
+            <div class="sidebar-user-role">Finance Director</div>
+        </div>
+    </div>
+</nav>
+
+<!-- ============================================================
+     MAIN CONTENT
+     ============================================================ -->
+<div class="main-with-sidebar">
+<div class="page-wrapper">
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb">
+        <a href="index.html">Dashboard</a>
+        <span class="sep">›</span>
+        <span>Input Data</span>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1><span class="icon">📝</span> Input Data Perjalanan Dinas</h1>
+        <p>Masukkan data rekap perjalanan dinas secara manual. Semua data akan tersimpan dengan format yang sama seperti upload Excel.</p>
+    </div>
+
+    <!-- Entry Tabs -->
+    <div class="entry-tabs" id="entryTabs">
+        <button class="entry-tab active" data-index="0">Isi 1.</button>
+        <button class="btn-add-entry" id="btnAddEntry" title="Tambah entri baru">+</button>
+    </div>
+
+    <!-- Form Card -->
+    <div class="form-card" id="formCard">
+
+        <!-- SECTION 1: Informasi Umum -->
+        <div class="form-section">
+            <div class="form-section-header">
+                <span class="section-number">1</span>
+                <h2>Informasi Umum</h2>
+            </div>
+            <div class="form-columns">
+                <div class="form-group">
+                    <label>Tahun Anggaran <span class="required">*</span></label>
+                    <select class="form-select" id="tahunAnggaran">
+                        <option value="2026" selected>2026</option>
+                        <option value="2025">2025</option>
+                        <option value="2024">2024</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Cost Center <span class="required">*</span></label>
+                    <input type="text" class="form-input" id="costCenterValue" placeholder="Otomatis saat Divisi dipilih" readonly style="background:#f0f4f5;cursor:not-allowed;">
+                    <span class="helper-text" style="font-size:11px;color:#6d797b;margin-top:4px;display:block;">✨ Terisi otomatis berdasarkan Divisi</span>
+                    <span class="error-msg">Pilih divisi terlebih dahulu</span>
+                </div>
+                <div class="form-group" style="position:relative;">
+                    <label>Nomor GL <span class="required">*</span></label>
+                    <div id="glDropdownWrapper" style="position:relative;">
+                        <input type="text" class="form-input" id="glSearchInput"
+                            placeholder="Pilih atau cari kode GL..."
+                            autocomplete="off"
+                            onclick="toggleGLDropdown()"
+                            oninput="filterGLOptions(this.value)"
+                            style="padding-right:36px;cursor:pointer;">
+                        <span onclick="toggleGLDropdown()" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);cursor:pointer;color:#6d797b;font-size:18px;font-family:'Material Symbols Outlined';">expand_more</span>
+                        <input type="hidden" id="kodeSAPValue">
+                        <div id="glDropdownList" style="display:none;position:absolute;top:100%;left:0;right:0;z-index:999;background:white;border:2px solid #1594a2;border-radius:10px;box-shadow:0 8px 24px rgba(12,97,106,0.15);max-height:220px;overflow-y:auto;">
+                            <div style="padding:8px;border-bottom:1px solid #e2e8f0;">
+                                <input type="text" id="glSearchInner" placeholder="🔍 Cari kode GL..." oninput="filterGLOptions(this.value)" style="width:100%;border:1px solid #e2e8f0;border-radius:6px;padding:6px 10px;font-size:13px;outline:none;">
+                            </div>
+                            <div id="glOptionsList">
+                                <div class="gl-option" onclick="selectGL('', 'Pilih Kode GL')" style="padding:10px 14px;font-size:13px;color:#1594a2;font-weight:600;background:#f0f4f5;">— Pilih Kode GL —</div>
+                            </div>
+                        </div>
+                    </div>
+                    <span class="error-msg">Pilih nomor GL</span>
+                </div>
+                <div class="form-group">
+                    <label>Divisi <span class="required">*</span></label>
+                    <select class="form-select" id="divisi" onchange="onDivisiChange(this.value)">
+                        <option value="">Pilih Divisi</option>
+                        <option value="DSPN">DSPN - Divisi Sekretariat Perusahaan</option>
+                        <option value="DTPI">DTPI - Divisi Satuan Pengawasan Intern</option>
+                        <option value="DTAN">DTAN - Divisi Tanaman</option>
+                        <option value="DTPL">DTPL - Divisi Teknik &amp; Pengolahan</option>
+                        <option value="DINF">DINF - Divisi Infrastruktur</option>
+                        <option value="DITN">DITN - Divisi Investasi Tanaman</option>
+                        <option value="DPSN">DPSN - Divisi Pemasaran</option>
+                        <option value="DRPL">DRPL - Divisi Rantai Pasok &amp; Logistik</option>
+                        <option value="DPEN">DPEN - Divisi Pengadaan</option>
+                        <option value="DSKP">DSKP - Divisi Strategi Perusahaan &amp; Pengendalian Kinerja AP</option>
+                        <option value="DSMS">DSMS - Divisi Sistem Manajemen &amp; Sustainability</option>
+                        <option value="DRPH">DRPH - Divisi Riset, Pengembangan Bisnis &amp; Hilirisasi</option>
+                        <option value="DKSH">DKSH - Divisi Keuangan Strategis dan Hubungan Investor</option>
+                        <option value="DPBA">DPBA - Divisi Perbendaharaan &amp; Anggaran</option>
+                        <option value="DAPN">DAPN - Divisi Akuntansi &amp; Perpajakan</option>
+                        <option value="DMRS">DMRS - Divisi Manajemen Risiko</option>
+                        <option value="DPSB">DPSB - Divisi Pengembangan SDM dan Budaya</option>
+                        <option value="DSDM">DSDM - Divisi Operasional SDM</option>
+                        <option value="DHPU">DHPU - Divisi HPS &amp; Umum</option>
+                        <option value="DTIS">DTIS - Divisi Teknologi Informasi</option>
+                        <option value="DHKT">DHKT - Divisi Hubungan Kelembagaan dan TJSL</option>
+                        <option value="DHKM">DHKM - Divisi Hukum</option>
+                        <option value="DPSR">DPSR - Divisi PSR dan Plasma</option>
+                        <option value="DPMO">DPMO - Project Management Office</option>
+                    </select>
+                    <span class="error-msg">Pilih divisi</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 2: Kategori & Vendor -->
+        <div class="form-section">
+            <div class="form-section-header">
+                <span class="section-number">2</span>
+                <h2>Kategori & Vendor</h2>
+            </div>
+            <div class="form-columns">
+                <div class="form-group">
+                    <label>Kategori <span class="required">*</span></label>
+                    <select class="form-select" id="kategori" onchange="autoFillUraian()">
+                        <option value="">Pilih Kategori</option>
+                        <option value="Pesawat">✈️ Pesawat</option>
+                        <option value="Hotel">🏨 Hotel</option>
+                        <option value="Kereta">🚆 Kereta</option>
+                        <option value="Mobil">🚗 Mobil / Rental</option>
+                        <option value="Per Diem">💰 Per Diem</option>
+                        <option value="Trans Lokal">🚕 Trans Lokal</option>
+                        <option value="Transport Dari & Ke">🚐 Transport Dari & Ke</option>
+                        <option value="Laundry">👔 Laundry</option>
+                        <option value="Lain-lain">📦 Lain-lain</option>
+                    </select>
+                    <span class="error-msg">Pilih kategori</span>
+                </div>
+                <div class="form-group">
+                    <label>Vendor <span class="required">*</span></label>
+                    <select class="form-select" id="vendor">
+                        <option value="">Pilih Vendor</option>
+                        <option value="FES">FES (Forever Express Service)</option>
+                        <option value="US">US</option>
+                        <option value="Lainnya">Lainnya</option>
+                    </select>
+                    <span class="error-msg">Pilih vendor</span>
+                </div>
+                <div class="form-group conditional-field" id="vendorLainnyaGroup">
+                    <label>Nama Vendor <span class="required">*</span></label>
+                    <input type="text" class="form-input" id="vendorLainnya" placeholder="Masukkan nama vendor">
+                </div>
+                <div class="form-group">
+                    <label>No Invoice <span class="required">*</span></label>
+                    <input type="text" class="form-input" id="noInvoice" placeholder="Contoh: 021/FES-PKU/04/2026">
+                    <span class="error-msg">Masukkan No Invoice</span>
+                </div>
+                <div class="form-group">
+                    <label>No MPP <span class="optional">(opsional)</span></label>
+                    <input type="text" class="form-input" id="noMpp" placeholder="Contoh: DHPU/PPb/380/2026">
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 3: Uraian & Tanggal -->
+        <div class="form-section">
+            <div class="form-section-header">
+                <span class="section-number">3</span>
+                <h2>Uraian & Tanggal</h2>
+            </div>
+            <div class="form-columns">
+                <div class="form-group">
+                    <label>Periode <span class="required">*</span></label>
+                    <div style="display:flex;gap:8px;">
+                        <select class="form-select" id="periodeBulan" style="flex:1;">
+                            <option value="">Bulan</option>
+                            <option value="01">Januari</option>
+                            <option value="02">Februari</option>
+                            <option value="03">Maret</option>
+                            <option value="04">April</option>
+                            <option value="05">Mei</option>
+                            <option value="06">Juni</option>
+                            <option value="07">Juli</option>
+                            <option value="08">Agustus</option>
+                            <option value="09">September</option>
+                            <option value="10">Oktober</option>
+                            <option value="11">November</option>
+                            <option value="12">Desember</option>
+                        </select>
+                        <select class="form-select" id="periodeTahun" style="width:100px;">
+                            <option value="2026">2026</option>
+                            <option value="2025">2025</option>
+                            <option value="2024">2024</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Tanggal Berangkat <span class="optional">(opsional)</span></label>
+                    <input type="date" class="form-input" id="tglBerangkat" onchange="autoFillUraian()">
+                </div>
+                <div class="form-group">
+                    <label>Tanggal Kembali <span class="optional">(opsional)</span></label>
+                    <input type="date" class="form-input" id="tglKembali" onchange="autoFillUraian()">
+                </div>
+                <div class="form-group full-width">
+                    <label>Uraian / Keterangan <span class="required">*</span></label>
+                    <div class="uraian-editor">
+                        <div class="uraian-toolbar">
+                            <button type="button" onclick="document.execCommand('bold')" title="Bold"><b>B</b></button>
+                            <button type="button" onclick="document.execCommand('italic')" title="Italic"><i>I</i></button>
+                            <button type="button" onclick="document.execCommand('underline')" title="Underline"><u>U</u></button>
+                            <span class="sep"></span>
+                            <button type="button" onclick="document.execCommand('insertUnorderedList')" title="Bullet List">☰</button>
+                            <button type="button" onclick="document.execCommand('insertOrderedList')" title="Numbered List">≡</button>
+                            <span class="sep"></span>
+                            <button type="button" onclick="document.execCommand('justifyLeft')" title="Align Left">⫷</button>
+                            <button type="button" onclick="document.execCommand('justifyCenter')" title="Center">⫸</button>
+                        </div>
+                        <div class="uraian-content" id="uraianContent" contenteditable="true" data-placeholder="Contoh: Pembayaran Tiket Pesawat April 2026 a.n. Staff HO PTPN IV..."></div>
+                    </div>
+                    <span class="error-msg">Masukkan uraian</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 4: Nominal & Tagihan -->
+        <div class="form-section">
+            <div class="form-section-header">
+                <span class="section-number">4</span>
+                <h2>Nominal & Tagihan</h2>
+            </div>
+
+            <!-- Ringkasan rumus: tampil setelah vendor dipilih -->
+            <div class="calc-summary" id="calcSummary" style="display:none;">
+                <div class="calc-summary-title" id="calcSummaryTitle">📊 Rumus Kalkulasi Otomatis</div>
+                <table class="calc-table" id="calcTable">
+                    <thead>
+                        <tr>
+                            <th>Field</th>
+                            <th>Tipe</th>
+                            <th>Rumus</th>
+                        </tr>
+                    </thead>
+                    <tbody id="calcTableBody">
+                        <!-- Diisi oleh JS sesuai vendor -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="form-columns">
+                <!-- Input utama — selalu tampil -->
+                <div class="form-group">
+                    <label>Tagihan <span class="required">*</span></label>
+                    <div class="currency-wrapper">
+                        <span class="prefix">Rp</span>
+                        <input type="text" class="form-input currency" id="tagihan" placeholder="0">
+                    </div>
+                    <span class="error-msg">Masukkan nominal tagihan</span>
+                </div>
+                <div class="form-group">
+                    <label>Service Fee <span class="required">*</span></label>
+                    <div class="currency-wrapper">
+                        <span class="prefix">Rp</span>
+                        <input type="text" class="form-input currency" id="serviceFee" placeholder="0">
+                    </div>
+                    <span class="error-msg">Masukkan nominal service fee</span>
+                </div>
+
+                <!-- FES only: Jumlah (pengali/qty) -->
+                <div class="form-group conditional-field" id="jumlahQtyGroup">
+                    <label>Jumlah <span class="optional">(malam/unit)</span></label>
+                    <input type="number" class="form-input" id="jumlahQty" min="1" value="1" placeholder="1">
+                    <span class="auto-calc-badge">⚡ Tagihan &amp; Service Fee dikali jumlah ini</span>
+                </div>
+
+                <!-- US only: DPP Service Fee -->
+                <div class="form-group conditional-field" id="dppServiceFeeGroup">
+                    <label>DPP Service Fee</label>
+                    <div class="currency-wrapper">
+                        <span class="prefix">Rp</span>
+                        <input type="text" class="form-input currency readonly" id="dppServiceFee" readonly>
+                    </div>
+                    <span class="auto-calc-badge">⚡ = 11/12 × Service Fee</span>
+                </div>
+
+                <!-- US only: PPN 12% -->
+                <div class="form-group conditional-field" id="ppnGroup">
+                    <label>PPN 12% dari Tagihan</label>
+                    <div class="currency-wrapper">
+                        <span class="prefix">Rp</span>
+                        <input type="text" class="form-input currency readonly" id="ppn" readonly>
+                    </div>
+                    <span class="auto-calc-badge">⚡ = Service Fee × 11%</span>
+                </div>
+
+                <!-- FES + US: PPH 23 -->
+                <div class="form-group conditional-field" id="pph23Group">
+                    <label>PPH 23</label>
+                    <div class="currency-wrapper">
+                        <span class="prefix">Rp</span>
+                        <input type="text" class="form-input currency readonly" id="pph23" readonly>
+                    </div>
+                    <span class="auto-calc-badge" id="pph23Badge">⚡ Auto-calculated</span>
+                </div>
+
+                <!-- US only: Tagihan Service Fee setelah Pajak -->
+                <div class="form-group conditional-field" id="tagihanServiceGroup">
+                    <label>Tagihan Service Fee setelah Pajak</label>
+                    <div class="currency-wrapper">
+                        <span class="prefix">Rp</span>
+                        <input type="text" class="form-input currency readonly" id="tagihanService" readonly>
+                    </div>
+                    <span class="auto-calc-badge">⚡ = Service Fee + PPN 12% − PPH 23</span>
+                </div>
+
+                <!-- FES + US: Jumlah Tagihan -->
+                <div class="form-group conditional-field" id="jumlahTagihanGroup">
+                    <label style="font-weight:700;color:var(--text-primary);">Jumlah Tagihan</label>
+                    <div class="currency-wrapper">
+                        <span class="prefix">Rp</span>
+                        <input type="text" class="form-input currency readonly" id="jumlahTagihan" readonly>
+                    </div>
+                    <span class="auto-calc-badge" id="jumlahTagihanBadge">⚡ Auto-calculated</span>
+                </div>
+
+                <!-- FES + US: Yang Dibayarkan (auto-calc) -->
+                <div class="form-group conditional-field" id="yangDibayarkanAutoGroup">
+                    <label style="font-weight:700;color:var(--text-primary);">Yang Dibayarkan</label>
+                    <div class="currency-wrapper">
+                        <span class="prefix">Rp</span>
+                        <input type="text" class="form-input currency readonly" id="yangDibayarkan" readonly>
+                    </div>
+                    <span class="auto-calc-badge">⚡ = Jumlah Tagihan − PPH 23</span>
+                </div>
+
+                <!-- Vendor lain: Yang Dibayarkan (manual) -->
+                <div class="form-group conditional-field" id="yangDibayarkanManualGroup">
+                    <label style="font-weight:700;color:var(--text-primary);">Yang Dibayarkan <span class="required">*</span></label>
+                    <div class="currency-wrapper">
+                        <span class="prefix">Rp</span>
+                        <input type="text" class="form-input currency" id="yangDibayarkanManual" placeholder="0">
+                    </div>
+                    <span class="error-msg">Masukkan nominal yang dibayarkan</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="form-actions">
+            <button class="btn btn-outline" type="button" id="btnReset">
+                <span class="icon">🗑️</span> Reset
+            </button>
+            <button class="btn btn-primary" type="button" id="btnSimpan">
+                <span class="icon">💾</span> Simpan Entri
+            </button>
+        </div>
+    </div>
+
+    <!-- Preview Table -->
+    <div class="preview-section" id="previewSection">
+        <h3>📋 Data Yang Sudah Diinput</h3>
+        <div class="preview-table-wrapper">
+            <table class="preview-table" id="previewTable">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Divisi</th>
+                        <th>Kategori</th>
+                        <th>Vendor</th>
+                        <th>Tagihan</th>
+                        <th>Yang Dibayarkan</th>
+                        <th>Uraian</th>
+                        <th>Periode</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="previewTableBody">
+                    <tr>
+                        <td colspan="9">
+                            <div class="empty-state">
+                                <div class="icon">📭</div>
+                                <p>Belum ada data yang diinput. Isi form di atas lalu klik <strong>Simpan Entri</strong>.</p>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Submit All Bar -->
+        <div class="submit-bar" id="submitBar" style="display:none;">
+            <div class="info">
+                <strong id="totalEntries">0</strong> entri siap disimpan
+                <span style="opacity:0.7;font-size:12px;margin-left:8px;">📦 Tersimpan otomatis di browser</span>
+            </div>
+            <div style="display:flex;gap:12px;align-items:center;">
+                <button class="btn-clear-all" id="btnClearAll" title="Hapus semua data dari database lokal">
+                    🗑️ Hapus Semua
+                </button>
+                <button class="btn-export-excel" id="btnExportExcel" title="Download sebagai file Excel format standar">
+                    📊 Export Excel
+                </button>
+                <button class="btn-submit-all" id="btnSubmitAll">
+                    💾 Simpan ke Database
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+</div><!-- end main-with-sidebar -->
+
+<script>
+// ============================================================
+// DATA REFERENSI DIVISI & GL
+// ============================================================
+const DIVISI_MAP = {
+    'DSPN': 'PHO0DSPN18', 'DTPI': 'PHO0DTPI18', 'DTAN': 'PHO0DTAN18',
+    'DTPL': 'PHO0DTPL18', 'DINF': 'PHO0DINF18', 'DITN': 'PHO0DITN18',
+    'DPSN': 'PHO0DPSN18', 'DRPL': 'PHO0DRPL18', 'DPEN': 'PHO0DPEN18',
+    'DSKP': 'PHO0DSKP18', 'DSMS': 'PHO0DSMS18', 'DRPH': 'PHO0DRPH18',
+    'DKSH': 'PHO0DKSH18', 'DPBA': 'PHO0DPBA18', 'DAPN': 'PHO0DAPN18',
+    'DMRS': 'PHO0DMRS18', 'DPSB': 'PHO0DPSB18', 'DSDM': 'PHO0DSDM18',
+    'DHPU': 'PHO0DHPU18', 'DTIS': 'PHO0DTIS18', 'DHKT': 'PHO0DHKT18',
+    'DHKM': 'PHO0DHKM18', 'DPSR': 'PHO0DPSR18', 'DPMO': 'PHO0DPMO18'
+};
+
+const GL_OPTIONS = [
+    { kode: '51100417', desc: 'Perjalanan Dinas' },
+    { kode: '51101073', desc: 'Biaya Tiket Moda Transportasi' },
+    { kode: '51100152', desc: 'Biaya Jasa Sewa Kendaraan' },
+    { kode: '51100158', desc: 'Biaya Mess' },
+    { kode: '51100420', desc: 'Biaya Akomodasi' },
+    { kode: '51100421', desc: 'Biaya Uang Harian' },
+];
+
+const BULAN_ID = ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+    'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+
+// ============================================================
+// KATEGORI MAPPING UNTUK URAIAN
+// ============================================================
+const KATEGORI_URAIAN = {
+    'Pesawat': 'Biaya Akomodasi Pesawat Perjadin',
+    'Hotel': 'Biaya Akomodasi Hotel Perjadin',
+    'Kereta': 'Biaya Tiket Kereta Perjadin',
+    'Mobil': 'Biaya Sewa Kendaraan Perjadin',
+    'Per Diem': 'Biaya Uang Harian (Per Diem) Perjadin',
+    'Trans Lokal': 'Biaya Transportasi Lokal Perjadin',
+    'Transport Dari & Ke': 'Biaya Transport Dari & Ke Perjadin',
+    'Laundry': 'Biaya Laundry Perjadin',
+    'Lain-lain': 'Biaya Lain-lain Perjadin',
+};
+
+// ============================================================
+// AUTO-FILL COST CENTER
+// ============================================================
+function onDivisiChange(kode) {
+    const cc = DIVISI_MAP[kode] || '';
+    const ccInput = document.getElementById('costCenterValue');
+    if (ccInput) ccInput.value = cc;
+    autoFillUraian();
+}
+
+// ============================================================
+// GL DROPDOWN
+// ============================================================
+function buildGLOptions() {
+    const list = document.getElementById('glOptionsList');
+    if (!list) return;
+    let html = '<div class="gl-option" onclick="selectGL(\'\', \'\')" style="padding:10px 14px;font-size:13px;color:#1594a2;font-weight:600;background:#f0f4f5;">— Pilih Kode GL —</div>';
+    const divisiEl = document.getElementById('divisi');
+    const kodeDiv = divisiEl ? divisiEl.value : '';
+    const prefix = kodeDiv || 'DHKM';
+    GL_OPTIONS.forEach(gl => {
+        html += `<div class="gl-option" onclick="selectGL('${gl.kode}', '${prefix} - ${gl.kode} (${gl.desc})')">${prefix} - ${gl.kode} (${gl.desc})</div>`;
+    });
+    list.innerHTML = html;
+}
+
+function toggleGLDropdown() {
+    buildGLOptions();
+    const dd = document.getElementById('glDropdownList');
+    if (!dd) return;
+    const isOpen = dd.style.display !== 'none';
+    dd.style.display = isOpen ? 'none' : 'block';
+    if (!isOpen) {
+        const inner = document.getElementById('glSearchInner');
+        if (inner) { inner.value = ''; filterGLOptions(''); inner.focus(); }
+    }
+}
+
+function filterGLOptions(query) {
+    const q = query.toLowerCase();
+    const items = document.querySelectorAll('.gl-option');
+    items.forEach(item => {
+        item.style.display = item.textContent.toLowerCase().includes(q) ? '' : 'none';
+    });
+}
+
+function selectGL(kode, label) {
+    document.getElementById('kodeSAPValue').value = kode;
+    document.getElementById('glSearchInput').value = label || '';
+    document.getElementById('glDropdownList').style.display = 'none';
+}
+
+// Close dropdown when clicking outside
+document.addEventListener('click', function(e) {
+    const wrapper = document.getElementById('glDropdownWrapper');
+    if (wrapper && !wrapper.contains(e.target)) {
+        const dd = document.getElementById('glDropdownList');
+        if (dd) dd.style.display = 'none';
+    }
+});
+
+// ============================================================
+// AUTO-FILL URAIAN
+// ============================================================
+function formatTgl(dateStr) {
+    if (!dateStr) return null;
+    const d = new Date(dateStr);
+    const dd = String(d.getDate()).padStart(2, '0');
+    const mm = d.getMonth() + 1;
+    const yyyy = d.getFullYear();
+    return { day: dd, monthNum: mm, monthName: BULAN_ID[mm], year: yyyy };
+}
+
+function autoFillUraian() {
+    const divisiEl = document.getElementById('divisi');
+    const kategoriEl = document.getElementById('kategori');
+    const tglBrgEl = document.getElementById('tglBerangkat');
+    const tglKmbEl = document.getElementById('tglKembali');
+    const noInvoiceEl = document.getElementById('noInvoice');
+    const uraianEl = document.getElementById('uraianContent');
+
+    if (!divisiEl || !kategoriEl || !uraianEl) return;
+
+    const divisiKode = divisiEl.value;
+    const kategori = kategoriEl.value;
+    if (!divisiKode || !kategori) return;
+
+    const tglBrg = formatTgl(tglBrgEl ? tglBrgEl.value : '');
+    const tglKmb = formatTgl(tglKmbEl ? tglKmbEl.value : '');
+    const noInvoice = noInvoiceEl ? noInvoiceEl.value : '';
+
+    const kegDesc = KATEGORI_URAIAN[kategori] || `Biaya ${kategori} Perjadin`;
+
+    let tglStr = '';
+    if (tglBrg && tglKmb) {
+        if (tglBrg.monthNum === tglKmb.monthNum && tglBrg.year === tglKmb.year) {
+            tglStr = `tgl ${tglBrg.day} - ${tglKmb.day} ${tglBrg.monthName} ${tglBrg.year}`;
+        } else {
+            tglStr = `tgl ${tglBrg.day} ${tglBrg.monthName} - ${tglKmb.day} ${tglKmb.monthName} ${tglKmb.year}`;
+        }
+    } else if (tglBrg) {
+        tglStr = `tgl ${tglBrg.day} ${tglBrg.monthName} ${tglBrg.year}`;
+    }
+
+    let uraian = `${divisiKode} - Pembayaran ${kegDesc}\nHO PTPN IV Palmco`;
+    if (tglStr) uraian += ` ${tglStr}`;
+    if (noInvoice) uraian += ` (No. INVOICE: ${noInvoice})`;
+
+    uraianEl.innerText = uraian;
+}
+
+// also trigger auto-fill ketika no invoice diisi
+document.addEventListener('DOMContentLoaded', function() {
+    const ni = document.getElementById('noInvoice');
+    if (ni) ni.addEventListener('input', autoFillUraian);
+    const kat = document.getElementById('kategori');
+    if (kat) kat.addEventListener('change', autoFillUraian);
+});
+</script>
+<script src="js/inputForm.js"></script>
+</body>
+</html>

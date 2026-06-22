@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<meta name="description" content="Pengaturan Sistem - Dashboard Umum PTPN IV">
+<title>Pengaturan - PTPN IV</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<script id="tailwind-config">
+tailwind.config = {
+    darkMode: "class",
+    theme: {
+        extend: {
+            colors: {
+                "error": "#ba1a1a", "surface-variant": "#dfe3e4", "on-background": "#171c1d",
+                "on-secondary-container": "#586c00", "tertiary": "#15656e", "surface-container-low": "#f0f4f5",
+                "on-tertiary-fixed": "#001f23", "surface-container": "#eaefef", "on-primary-fixed-variant": "#004f57",
+                "inverse-primary": "#6dd5e4", "on-tertiary-container": "#f6feff", "background": "#f6fafb",
+                "surface-bright": "#f6fafb", "primary": "#006670", "on-error": "#ffffff", "surface": "#f6fafb",
+                "secondary-fixed-dim": "#b6d250", "on-surface": "#171c1d", "outline-variant": "#bdc9cb",
+                "on-surface-variant": "#3d494b", "on-primary-container": "#f7feff", "secondary": "#536600",
+                "secondary-fixed": "#d2ef69", "surface-container-high": "#e4e9ea", "primary-fixed-dim": "#6dd5e4",
+                "on-secondary-fixed": "#171e00", "inverse-surface": "#2c3132", "surface-tint": "#006973",
+                "error-container": "#ffdad6", "on-primary-fixed": "#001f23", "primary-fixed": "#93f1ff",
+                "surface-dim": "#d6dbdb", "surface-container-highest": "#dfe3e4", "primary-container": "#00818e",
+                "on-tertiary": "#ffffff", "on-error-container": "#93000a", "tertiary-container": "#367e88",
+                "surface-container-lowest": "#ffffff", "outline": "#6d797b", "on-secondary": "#ffffff",
+                "secondary-container": "#d2ef69", "on-primary": "#ffffff"
+            },
+            borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+            fontFamily: {
+                "label-sm": ["Inter"], "headline-md": ["Inter"], "display-lg": ["Inter"],
+                "financial-sm": ["JetBrains Mono"], "body-base": ["Inter"], "financial-lg": ["JetBrains Mono"]
+            }
+        }
+    }
+}
+</script>
+<style>
+    body { font-family: 'Inter', sans-serif; }
+    .nav-link { transition: all 0.2s ease; border-left: 4px solid transparent; }
+    .nav-link:hover { color: white !important; background: rgba(13, 148, 136, 0.2); }
+    .nav-link.active { color: #b6d250 !important; border-left-color: #b6d250; background: rgba(13, 148, 136, 0.2); }
+    .card-shadow { box-shadow: 0 2px 12px rgba(12,97,106,0.08); }
+    .input-field { width: 100%; background: #f6fafb; border: 1px solid #bdc9cb; border-radius: 8px; padding: 10px 14px; font-size: 14px; outline: none; transition: border-color 0.2s, box-shadow 0.2s; }
+    .input-field:focus { border-color: #006670; box-shadow: 0 0 0 3px rgba(0, 102, 112, 0.15); }
+    .btn-primary { background: #006670; color: white; padding: 10px 24px; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; transition: background 0.2s; border: none; display: inline-flex; align-items: center; gap: 6px; }
+    .btn-primary:hover { background: #004f57; }
+    .btn-danger { background: transparent; color: #ba1a1a; border: 1px solid #ba1a1a; padding: 6px 14px; border-radius: 8px; font-size: 12px; cursor: pointer; transition: all 0.2s; }
+    .btn-danger:hover { background: #ffdad6; }
+    .badge-kode { background: #e8f4f4; color: #006670; padding: 3px 10px; border-radius: 20px; font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 600; display: inline-block; }
+    /* Modal */
+    .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); z-index:1000; align-items:center; justify-content:center; }
+    .modal-overlay.open { display:flex; }
+    .modal-box { background:white; border-radius:16px; padding:32px; max-width:480px; width:90%; box-shadow:0 20px 60px rgba(0,0,0,0.2); }
+    .modal-title { font-size:18px; font-weight:700; color:#171c1d; margin-bottom:20px; display:flex; align-items:center; gap:8px; }
+    .modal-field { margin-bottom:16px; }
+    .modal-field label { display:block; font-size:13px; font-weight:500; color:#3d494b; margin-bottom:6px; }
+    .modal-actions { display:flex; justify-content:flex-end; gap:10px; margin-top:24px; }
+    .btn-cancel { background:transparent; border:1px solid #bdc9cb; color:#3d494b; padding:8px 20px; border-radius:8px; font-size:13px; cursor:pointer; }
+    .btn-cancel:hover { background:#f0f4f5; }
+    /* Toast */
+    .toast { position:fixed; bottom:24px; right:24px; background:#006670; color:white; padding:12px 20px; border-radius:10px; font-size:13px; font-weight:500; box-shadow:0 4px 16px rgba(0,102,112,0.3); z-index:9999; transform:translateY(80px); opacity:0; transition:all 0.3s; pointer-events:none; }
+    .toast.show { transform:translateY(0); opacity:1; }
+    /* Table row hover */
+    #divisiTableBody tr { transition: background 0.15s; }
+    #divisiTableBody tr:hover { background: #f6fafb; }
+</style>
+</head>
+<body class="bg-background text-on-background antialiased flex">
+
+<!-- SIDEBAR -->
+<nav class="bg-[#0c616a] fixed h-screen w-[260px] left-0 top-0 border-r border-teal-900/20 shadow-xl flex flex-col pt-6 pb-4 z-50">
+    <div class="px-6 mb-8 pt-6">
+        <h1 class="text-[20px] font-black tracking-tight text-white leading-tight uppercase">PTPN IV</h1>
+        <p class="text-[12px] tracking-wide text-teal-200/70 mt-1">Agro-Corporate Portal</p>
+    </div>
+    <div class="flex flex-col gap-1 flex-1 text-sm tracking-wide">
+        <a class="nav-link flex items-center gap-4 px-6 py-4 text-white/70" href="index.html">
+            <span class="material-symbols-outlined">dashboard</span><span>Dashboard</span>
+        </a>
+        <a class="nav-link flex items-center gap-4 px-6 py-4 text-white/70" href="input.html">
+            <span class="material-symbols-outlined">edit_note</span><span>Input Data</span>
+        </a>
+        <a class="nav-link flex items-center gap-4 px-6 py-4 text-white/70" href="#">
+            <span class="material-symbols-outlined">cloud_upload</span><span>Upload Data</span>
+        </a>
+        <a class="nav-link flex items-center gap-4 px-6 py-4 text-white/70" href="laporan.html">
+            <span class="material-symbols-outlined">description</span><span>Laporan</span>
+        </a>
+        <a class="nav-link active flex items-center gap-4 px-6 py-4 text-white/70" href="pengaturan.html">
+            <span class="material-symbols-outlined">settings</span><span>Pengaturan</span>
+        </a>
+    </div>
+    <div class="mt-auto p-6 border-t border-teal-900/50">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-teal-700 text-white font-bold text-sm flex items-center justify-center flex-shrink-0">BS</div>
+            <div>
+                <span class="text-white font-bold text-[14px] block">Budi Santoso</span>
+                <span class="text-teal-200/70 text-[11px]">Finance Director</span>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- TOPBAR -->
+<header class="fixed top-0 left-[260px] right-0 h-16 bg-white border-b border-slate-100 shadow-[0_2px_12px_rgba(12,97,106,0.08)] flex items-center justify-between px-8 z-40">
+    <span class="text-lg font-bold text-teal-800">Pengaturan Sistem</span>
+    <div class="flex items-center gap-2 text-slate-500">
+        <button class="p-2 rounded-full hover:bg-slate-50 transition-colors" title="Notifikasi">
+            <span class="material-symbols-outlined">notifications</span>
+        </button>
+        <button class="p-2 rounded-full hover:bg-slate-50 transition-colors" title="Bantuan">
+            <span class="material-symbols-outlined">help</span>
+        </button>
+        <div class="w-8 h-8 rounded-full bg-teal-700 text-white text-xs font-bold flex items-center justify-center ml-2">BS</div>
+    </div>
+</header>
+
+<!-- MAIN -->
+<main class="ml-[260px] pt-24 px-6 pb-12 flex-1">
+    <div class="max-w-[1400px] mx-auto flex flex-col gap-6">
+
+        <!-- Page Title -->
+        <div>
+            <h1 class="text-[28px] font-bold text-on-surface flex items-center gap-3">
+                <span class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-primary">settings</span>
+                </span>
+                Pengaturan Sistem
+            </h1>
+            <p class="text-on-surface-variant text-sm mt-1 ml-[52px]">Kelola preferensi akun, daftar divisi, dan referensi data utama.</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+            <!-- Profil User -->
+            <div class="col-span-12 lg:col-span-8 bg-surface-container-lowest rounded-2xl card-shadow">
+                <div class="p-6 border-b border-surface-variant flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-primary text-[22px]">person</span>
+                    </div>
+                    <div>
+                        <h2 class="text-[18px] font-semibold text-on-surface">Profil User</h2>
+                        <p class="text-[12px] text-on-surface-variant">Kelola informasi akun Anda</p>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div>
+                            <label class="block text-[13px] font-medium text-on-surface-variant mb-2">Nama Lengkap</label>
+                            <input class="input-field" type="text" id="profileNama" value="Budi Santoso">
+                        </div>
+                        <div>
+                            <label class="block text-[13px] font-medium text-on-surface-variant mb-2">Alamat Email</label>
+                            <input class="input-field" type="email" id="profileEmail" value="budi.santoso@ptpn4.co.id">
+                        </div>
+                        <div>
+                            <label class="block text-[13px] font-medium text-on-surface-variant mb-2">Jabatan</label>
+                            <input class="input-field" type="text" id="profileJabatan" value="Finance Director">
+                        </div>
+                        <div>
+                            <label class="block text-[13px] font-medium text-on-surface-variant mb-2">Password Baru</label>
+                            <input class="input-field" type="password" id="profilePassword" placeholder="Kosongkan jika tidak diubah">
+                        </div>
+                        <div class="col-span-1 md:col-span-2 flex justify-end">
+                            <button class="btn-primary" onclick="showToast('✅ Profil berhasil disimpan!')">
+                                <span class="material-symbols-outlined text-[18px]">save</span>
+                                Simpan Perubahan
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Info Cards -->
+            <div class="col-span-12 lg:col-span-4 flex flex-col gap-4">
+                <!-- Statistik -->
+                <div class="bg-gradient-to-br from-primary to-[#004f57] rounded-2xl p-6 text-white card-shadow">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="material-symbols-outlined text-[28px]">domain</span>
+                        <div>
+                            <p class="text-[12px] text-white/70">Total Divisi</p>
+                            <p class="text-[32px] font-bold leading-tight" id="totalDivisiCount">24</p>
+                        </div>
+                    </div>
+                    <div class="border-t border-white/20 pt-4 grid grid-cols-2 gap-4">
+                        <div>
+                            <p class="text-[10px] text-white/60">Kategori GL</p>
+                            <p class="text-[18px] font-bold">6</p>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-white/60">Tahun Aktif</p>
+                            <p class="text-[18px] font-bold">2026</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Format Cost Center -->
+                <div class="bg-surface-container-lowest rounded-2xl card-shadow p-5">
+                    <h3 class="font-semibold text-on-surface mb-3 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-tertiary text-[20px]">info</span>
+                        Format Cost Center
+                    </h3>
+                    <div class="bg-surface-container-low rounded-lg p-3 font-mono text-[13px] text-primary font-bold text-center tracking-widest">
+                        PHO0[KODE]18
+                    </div>
+                    <p class="text-[12px] text-on-surface-variant mt-2">
+                        Contoh: <code class="bg-surface-container-low px-1 rounded font-mono">PHO0DAPN18</code> untuk Divisi DAPN
+                    </p>
+                </div>
+            </div>
+
+            <!-- Daftar Divisi -->
+            <div class="col-span-12 bg-surface-container-lowest rounded-2xl card-shadow overflow-hidden">
+                <div class="p-6 border-b border-surface-variant flex flex-wrap items-center justify-between gap-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-secondary-fixed/30 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-secondary text-[22px]">domain</span>
+                        </div>
+                        <div>
+                            <h2 class="text-[18px] font-semibold text-on-surface">Daftar Divisi</h2>
+                            <p class="text-[12px] text-on-surface-variant">Kelola divisi struktural PTPN IV</p>
+                        </div>
+                    </div>
+                    <button onclick="openAddModal()" class="btn-primary">
+                        <span class="material-symbols-outlined text-[18px]">add</span>Tambah Divisi
+                    </button>
+                </div>
+
+                <!-- Search bar -->
+                <div class="px-6 py-4 border-b border-surface-container-low">
+                    <div class="relative max-w-sm">
+                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">search</span>
+                        <input type="text" id="divisiSearch" onkeyup="filterDivisi()" placeholder="Cari divisi..." class="input-field pl-10">
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left" id="divisiTable">
+                        <thead>
+                            <tr class="bg-surface-container-low border-b border-surface-variant text-on-surface-variant text-[12px] uppercase tracking-wider font-semibold">
+                                <th class="px-6 py-3">Kode</th>
+                                <th class="px-6 py-3">Nama Divisi</th>
+                                <th class="px-6 py-3">Cost Center</th>
+                                <th class="px-6 py-3">Kepala Divisi</th>
+                                <th class="px-6 py-3 text-right">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="divisiTableBody" class="divide-y divide-surface-container text-[13px] text-on-surface">
+                            <!-- Diisi JS -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="px-6 py-3 border-t border-surface-container bg-surface-container-low/30 text-[12px] text-on-surface-variant">
+                    Total: <span id="divisiCountLabel" class="font-semibold text-primary">24</span> divisi
+                </div>
+            </div>
+
+            <!-- Kategori Biaya -->
+            <div class="col-span-12 lg:col-span-6 bg-surface-container-lowest rounded-2xl card-shadow">
+                <div class="p-6 border-b border-surface-variant flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-tertiary/10 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-tertiary text-[22px]">category</span>
+                    </div>
+                    <div>
+                        <h2 class="text-[18px] font-semibold text-on-surface">Kategori Biaya</h2>
+                        <p class="text-[12px] text-on-surface-variant">Jenis pengeluaran perjalanan dinas</p>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="flex items-center gap-3 p-3 rounded-xl bg-sky-50 border border-sky-100">
+                            <div class="w-10 h-10 rounded-full bg-sky-100 flex items-center justify-center flex-shrink-0">
+                                <span class="material-symbols-outlined text-sky-500">flight</span>
+                            </div>
+                            <div>
+                                <p class="font-semibold text-[13px] text-on-surface">Pesawat</p>
+                                <p class="text-[11px] text-on-surface-variant">Tiket penerbangan</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3 p-3 rounded-xl bg-purple-50 border border-purple-100">
+                            <div class="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center flex-shrink-0">
+                                <span class="material-symbols-outlined text-purple-500">hotel</span>
+                            </div>
+                            <div>
+                                <p class="font-semibold text-[13px] text-on-surface">Hotel</p>
+                                <p class="text-[11px] text-on-surface-variant">Akomodasi penginapan</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3 p-3 rounded-xl bg-yellow-50 border border-yellow-100">
+                            <div class="w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center flex-shrink-0">
+                                <span class="material-symbols-outlined text-yellow-500">train</span>
+                            </div>
+                            <div>
+                                <p class="font-semibold text-[13px] text-on-surface">Kereta</p>
+                                <p class="text-[11px] text-on-surface-variant">Tiket kereta api</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3 p-3 rounded-xl bg-emerald-50 border border-emerald-100">
+                            <div class="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0">
+                                <span class="material-symbols-outlined text-emerald-500">directions_car</span>
+                            </div>
+                            <div>
+                                <p class="font-semibold text-[13px] text-on-surface">Mobil</p>
+                                <p class="text-[11px] text-on-surface-variant">Sewa kendaraan</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3 p-3 rounded-xl bg-pink-50 border border-pink-100">
+                            <div class="w-10 h-10 rounded-full bg-pink-100 flex items-center justify-center flex-shrink-0">
+                                <span class="material-symbols-outlined text-pink-500">payments</span>
+                            </div>
+                            <div>
+                                <p class="font-semibold text-[13px] text-on-surface">Per Diem</p>
+                                <p class="text-[11px] text-on-surface-variant">Uang harian</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 border border-slate-100">
+                            <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center flex-shrink-0">
+                                <span class="material-symbols-outlined text-slate-500">local_taxi</span>
+                            </div>
+                            <div>
+                                <p class="font-semibold text-[13px] text-on-surface">Trans Lokal</p>
+                                <p class="text-[11px] text-on-surface-variant">Transportasi setempat</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3 p-3 rounded-xl bg-orange-50 border border-orange-100">
+                            <div class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0">
+                                <span class="material-symbols-outlined text-orange-500">airport_shuttle</span>
+                            </div>
+                            <div>
+                                <p class="font-semibold text-[13px] text-on-surface">Transport</p>
+                                <p class="text-[11px] text-on-surface-variant">Antar jemput bandara</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3 p-3 rounded-xl bg-teal-50 border border-teal-100">
+                            <div class="w-10 h-10 rounded-full bg-teal-100 flex items-center justify-center flex-shrink-0">
+                                <span class="material-symbols-outlined text-teal-500">dry_cleaning</span>
+                            </div>
+                            <div>
+                                <p class="font-semibold text-[13px] text-on-surface">Laundry</p>
+                                <p class="text-[11px] text-on-surface-variant">Cuci pakaian dinas</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Referensi Nomor GL -->
+            <div class="col-span-12 lg:col-span-6 bg-surface-container-lowest rounded-2xl card-shadow">
+                <div class="p-6 border-b border-surface-variant flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-primary text-[22px]">tag</span>
+                    </div>
+                    <div>
+                        <h2 class="text-[18px] font-semibold text-on-surface">Referensi Nomor GL</h2>
+                        <p class="text-[12px] text-on-surface-variant">Kode GL yang tersedia di sistem</p>
+                    </div>
+                </div>
+                <div class="p-6 flex flex-col gap-3">
+                    <div class="flex items-center justify-between p-4 rounded-xl bg-surface-container-low border border-surface-container hover:bg-surface-container transition-colors">
+                        <div>
+                            <span class="font-mono text-primary font-bold text-[14px]">51100417</span>
+                            <p class="text-[12px] text-on-surface-variant mt-0.5">Perjalanan Dinas</p>
+                        </div>
+                        <span class="material-symbols-outlined text-outline text-[18px]">flight_takeoff</span>
+                    </div>
+                    <div class="flex items-center justify-between p-4 rounded-xl bg-surface-container-low border border-surface-container hover:bg-surface-container transition-colors">
+                        <div>
+                            <span class="font-mono text-primary font-bold text-[14px]">51101073</span>
+                            <p class="text-[12px] text-on-surface-variant mt-0.5">Biaya Tiket Moda Transportasi</p>
+                        </div>
+                        <span class="material-symbols-outlined text-outline text-[18px]">confirmation_number</span>
+                    </div>
+                    <div class="flex items-center justify-between p-4 rounded-xl bg-surface-container-low border border-surface-container hover:bg-surface-container transition-colors">
+                        <div>
+                            <span class="font-mono text-primary font-bold text-[14px]">51100152</span>
+                            <p class="text-[12px] text-on-surface-variant mt-0.5">Biaya Jasa Sewa Kendaraan</p>
+                        </div>
+                        <span class="material-symbols-outlined text-outline text-[18px]">directions_car</span>
+                    </div>
+                    <div class="flex items-center justify-between p-4 rounded-xl bg-surface-container-low border border-surface-container hover:bg-surface-container transition-colors">
+                        <div>
+                            <span class="font-mono text-primary font-bold text-[14px]">51100158</span>
+                            <p class="text-[12px] text-on-surface-variant mt-0.5">Biaya Mess / Penginapan</p>
+                        </div>
+                        <span class="material-symbols-outlined text-outline text-[18px]">hotel</span>
+                    </div>
+                    <div class="flex items-center justify-between p-4 rounded-xl bg-surface-container-low border border-surface-container hover:bg-surface-container transition-colors">
+                        <div>
+                            <span class="font-mono text-primary font-bold text-[14px]">51100420</span>
+                            <p class="text-[12px] text-on-surface-variant mt-0.5">Biaya Akomodasi</p>
+                        </div>
+                        <span class="material-symbols-outlined text-outline text-[18px]">luggage</span>
+                    </div>
+                    <div class="flex items-center justify-between p-4 rounded-xl bg-surface-container-low border border-surface-container hover:bg-surface-container transition-colors">
+                        <div>
+                            <span class="font-mono text-primary font-bold text-[14px]">51100421</span>
+                            <p class="text-[12px] text-on-surface-variant mt-0.5">Biaya Uang Harian</p>
+                        </div>
+                        <span class="material-symbols-outlined text-outline text-[18px]">payments</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</main>
+
+<!-- MODAL TAMBAH/EDIT DIVISI -->
+<div class="modal-overlay" id="divisiModal">
+    <div class="modal-box">
+        <div class="modal-title">
+            <span class="material-symbols-outlined text-primary">domain</span>
+            <span id="modalTitle">Tambah Divisi</span>
+        </div>
+        <input type="hidden" id="editIndex" value="-1">
+        <div class="modal-field">
+            <label>Kode Divisi <span style="color:#ba1a1a">*</span></label>
+            <input type="text" id="mKode" class="input-field" placeholder="Contoh: DAPN" style="text-transform:uppercase;">
+        </div>
+        <div class="modal-field">
+            <label>Nama Divisi <span style="color:#ba1a1a">*</span></label>
+            <input type="text" id="mNama" class="input-field" placeholder="Contoh: Divisi Akuntansi & Perpajakan">
+        </div>
+        <div class="modal-field">
+            <label>Cost Center</label>
+            <input type="text" id="mCostCenter" class="input-field" placeholder="Otomatis: PHO0[KODE]18" readonly style="background:#f0f4f5;cursor:not-allowed;">
+        </div>
+        <div class="modal-field">
+            <label>Kepala Divisi</label>
+            <input type="text" id="mKepala" class="input-field" placeholder="Nama Kepala Divisi">
+        </div>
+        <div class="modal-actions">
+            <button class="btn-cancel" onclick="closeModal()">Batal</button>
+            <button class="btn-primary" onclick="saveDivisi()">Simpan</button>
+        </div>
+    </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toastMsg"></div>
+
+<script>
+// ============================================================
+// DEFAULT DATA
+// ============================================================
+const DEFAULT_DIVISI = [
+    { kode: 'DSPN', nama: 'Divisi Sekretariat Perusahaan', kepala: '-' },
+    { kode: 'DTPI', nama: 'Divisi Satuan Pengawasan Intern', kepala: '-' },
+    { kode: 'DTAN', nama: 'Divisi Tanaman', kepala: '-' },
+    { kode: 'DTPL', nama: 'Divisi Teknik & Pengolahan', kepala: '-' },
+    { kode: 'DINF', nama: 'Divisi Infrastruktur', kepala: '-' },
+    { kode: 'DITN', nama: 'Divisi Investasi Tanaman', kepala: '-' },
+    { kode: 'DPSN', nama: 'Divisi Pemasaran', kepala: '-' },
+    { kode: 'DRPL', nama: 'Divisi Rantai Pasok & Logistik', kepala: '-' },
+    { kode: 'DPEN', nama: 'Divisi Pengadaan', kepala: '-' },
+    { kode: 'DSKP', nama: 'Divisi Strategi Perusahaan & Pengendalian Kinerja Anak Perusahaan', kepala: '-' },
+    { kode: 'DSMS', nama: 'Divisi Sistem Manajemen & Sustainability', kepala: '-' },
+    { kode: 'DRPH', nama: 'Divisi Riset, Pengembangan Bisnis & Hilirisasi', kepala: '-' },
+    { kode: 'DKSH', nama: 'Divisi Keuangan Strategis dan Hubungan Investor', kepala: '-' },
+    { kode: 'DPBA', nama: 'Divisi Perbendaharaan & Anggaran', kepala: '-' },
+    { kode: 'DAPN', nama: 'Divisi Akuntansi & Perpajakan', kepala: '-' },
+    { kode: 'DMRS', nama: 'Divisi Manajemen Risiko', kepala: '-' },
+    { kode: 'DPSB', nama: 'Divisi Pengembangan SDM dan Budaya', kepala: '-' },
+    { kode: 'DSDM', nama: 'Divisi Operasional SDM', kepala: '-' },
+    { kode: 'DHPU', nama: 'Divisi HPS & Umum', kepala: '-' },
+    { kode: 'DTIS', nama: 'Divisi Teknologi Informasi', kepala: '-' },
+    { kode: 'DHKT', nama: 'Divisi Hubungan Kelembagaan dan TJSL', kepala: '-' },
+    { kode: 'DHKM', nama: 'Divisi Hukum', kepala: '-' },
+    { kode: 'DPSR', nama: 'Divisi PSR dan Plasma', kepala: '-' },
+    { kode: 'DPMO', nama: 'Project Management Office', kepala: '-' },
+];
+
+// ============================================================
+// STORAGE
+// ============================================================
+function loadDivisi() {
+    const stored = localStorage.getItem('ptpn4_divisi');
+    return stored ? JSON.parse(stored) : JSON.parse(JSON.stringify(DEFAULT_DIVISI));
+}
+
+function saveDivisiToStorage(list) {
+    localStorage.setItem('ptpn4_divisi', JSON.stringify(list));
+}
+
+let divisiList = loadDivisi();
+
+// ============================================================
+// RENDER TABLE
+// ============================================================
+function renderTable(data) {
+    const tbody = document.getElementById('divisiTableBody');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+    if (data.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:32px;color:#6d797b;">Tidak ada data divisi</td></tr>';
+        document.getElementById('divisiCountLabel').textContent = 0;
+        return;
+    }
+    data.forEach((d, i) => {
+        // Find actual index in divisiList for edit/delete
+        const realIdx = divisiList.indexOf(d);
+        const cc = 'PHO0' + d.kode + '18';
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td class="px-6 py-4"><span class="badge-kode">${escHtml(d.kode)}</span></td>
+            <td class="px-6 py-4 font-medium text-on-surface">${escHtml(d.nama)}</td>
+            <td class="px-6 py-4 font-mono text-[12px] text-on-surface-variant">${escHtml(cc)}</td>
+            <td class="px-6 py-4 text-on-surface-variant">${escHtml(d.kepala)}</td>
+            <td class="px-6 py-4">
+                <div class="flex justify-end gap-2">
+                    <button onclick="openEditModal(${realIdx})" class="w-8 h-8 flex items-center justify-center rounded-lg text-outline hover:text-primary hover:bg-primary/10 transition-colors" title="Edit">
+                        <span class="material-symbols-outlined text-[18px]">edit</span>
+                    </button>
+                    <button onclick="deleteDivisi(${realIdx})" class="w-8 h-8 flex items-center justify-center rounded-lg text-outline hover:text-error hover:bg-error/10 transition-colors" title="Hapus">
+                        <span class="material-symbols-outlined text-[18px]">delete</span>
+                    </button>
+                </div>
+            </td>
+        `;
+        tbody.appendChild(row);
+    });
+    document.getElementById('divisiCountLabel').textContent = data.length;
+    document.getElementById('totalDivisiCount').textContent = divisiList.length;
+}
+
+function escHtml(str) {
+    if (!str) return '';
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function filterDivisi() {
+    const q = document.getElementById('divisiSearch').value.toLowerCase();
+    const filtered = divisiList.filter(d =>
+        d.kode.toLowerCase().includes(q) || d.nama.toLowerCase().includes(q)
+    );
+    renderTable(filtered);
+}
+
+// ============================================================
+// MODAL
+// ============================================================
+function openAddModal() {
+    document.getElementById('modalTitle').textContent = 'Tambah Divisi';
+    document.getElementById('editIndex').value = '-1';
+    document.getElementById('mKode').value = '';
+    document.getElementById('mNama').value = '';
+    document.getElementById('mCostCenter').value = '';
+    document.getElementById('mKepala').value = '';
+    document.getElementById('mKode').removeAttribute('readonly');
+    document.getElementById('mKode').style.background = '';
+    document.getElementById('mKode').style.cursor = '';
+    document.getElementById('divisiModal').classList.add('open');
+    setTimeout(() => document.getElementById('mKode').focus(), 100);
+}
+
+function openEditModal(idx) {
+    const d = divisiList[idx];
+    if (!d) return;
+    document.getElementById('modalTitle').textContent = 'Edit Divisi';
+    document.getElementById('editIndex').value = idx;
+    document.getElementById('mKode').value = d.kode;
+    document.getElementById('mNama').value = d.nama;
+    document.getElementById('mCostCenter').value = 'PHO0' + d.kode + '18';
+    document.getElementById('mKepala').value = d.kepala;
+    document.getElementById('mKode').setAttribute('readonly', 'readonly');
+    document.getElementById('mKode').style.background = '#f0f4f5';
+    document.getElementById('mKode').style.cursor = 'not-allowed';
+    document.getElementById('divisiModal').classList.add('open');
+    setTimeout(() => document.getElementById('mNama').focus(), 100);
+}
+
+function closeModal() {
+    document.getElementById('divisiModal').classList.remove('open');
+}
+
+function saveDivisi() {
+    const kode = document.getElementById('mKode').value.trim().toUpperCase();
+    const nama = document.getElementById('mNama').value.trim();
+    const kepala = document.getElementById('mKepala').value.trim() || '-';
+    const idx = parseInt(document.getElementById('editIndex').value);
+
+    if (!kode) { showToast('⚠️ Kode divisi wajib diisi!', true); return; }
+    if (!nama) { showToast('⚠️ Nama divisi wajib diisi!', true); return; }
+
+    if (idx === -1) {
+        // Check duplicate
+        if (divisiList.find(d => d.kode === kode)) {
+            showToast('⚠️ Kode divisi sudah ada!', true); return;
+        }
+        divisiList.push({ kode, nama, kepala });
+        showToast('✅ Divisi berhasil ditambahkan!');
+    } else {
+        divisiList[idx] = { kode, nama, kepala };
+        showToast('✅ Divisi berhasil diperbarui!');
+    }
+
+    saveDivisiToStorage(divisiList);
+    renderTable(divisiList);
+    closeModal();
+}
+
+function deleteDivisi(idx) {
+    if (!confirm(`Hapus divisi "${divisiList[idx]?.kode}"? Aksi ini tidak dapat dibatalkan.`)) return;
+    divisiList.splice(idx, 1);
+    saveDivisiToStorage(divisiList);
+    renderTable(divisiList);
+    showToast('🗑️ Divisi berhasil dihapus!');
+}
+
+// ============================================================
+// TOAST
+// ============================================================
+function showToast(msg, isError = false) {
+    const t = document.getElementById('toastMsg');
+    t.textContent = msg;
+    t.style.background = isError ? '#ba1a1a' : '#006670';
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ============================================================
+// AUTO COST CENTER IN MODAL
+// ============================================================
+document.addEventListener('DOMContentLoaded', function() {
+    const kodeInput = document.getElementById('mKode');
+    if (kodeInput) {
+        kodeInput.addEventListener('input', function() {
+            const val = this.value.toUpperCase();
+            this.value = val;
+            document.getElementById('mCostCenter').value = val ? 'PHO0' + val + '18' : '';
+        });
+    }
+
+    // Close modal on overlay click
+    document.getElementById('divisiModal').addEventListener('click', function(e) {
+        if (e.target === this) closeModal();
+    });
+
+    // Render table on load
+    renderTable(divisiList);
+});
+</script>
+</body>
+</html>

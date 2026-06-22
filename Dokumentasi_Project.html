@@ -1,0 +1,1550 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dokumentasi Project — Dashboard Umum PTPN IV</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* ============================================================
+           PRINT & PAGE SETUP
+           ============================================================ */
+        @page {
+            size: A4;
+            margin: 20mm 18mm;
+        }
+
+        @media print {
+            body { background: white !important; }
+            .page-break { page-break-before: always; }
+            .no-print { display: none !important; }
+            .cover-page { min-height: 100vh; }
+            .toc { page-break-after: always; }
+            section { page-break-inside: avoid; }
+            h2 { page-break-after: avoid; }
+            table { page-break-inside: avoid; }
+        }
+
+        /* ============================================================
+           BASE STYLES
+           ============================================================ */
+        :root {
+            --teal-900: #0c616a;
+            --teal-800: #0d7480;
+            --teal-700: #1594a2;
+            --teal-600: #1caab9;
+            --teal-100: #e0f7fa;
+            --teal-50: #f0feff;
+            --lime-500: #b6d250;
+            --lime-100: #f0f9d6;
+            --text-primary: #1a2e35;
+            --text-secondary: #5a7a82;
+            --text-muted: #94a3b8;
+            --border: #e2e8f0;
+            --bg-light: #f8fafb;
+            --red-500: #ef4444;
+            --amber-500: #f59e0b;
+            --green-500: #22c55e;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            color: var(--text-primary);
+            background: var(--bg-light);
+            line-height: 1.7;
+            font-size: 14px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* ============================================================
+           COVER PAGE
+           ============================================================ */
+        .cover-page {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: linear-gradient(135deg, var(--teal-900) 0%, var(--teal-800) 50%, var(--teal-700) 100%);
+            color: white;
+            padding: 60px 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cover-page::before {
+            content: '';
+            position: absolute;
+            top: -100px;
+            right: -100px;
+            width: 400px;
+            height: 400px;
+            border-radius: 50%;
+            background: rgba(182,210,80,0.08);
+        }
+
+        .cover-page::after {
+            content: '';
+            position: absolute;
+            bottom: -120px;
+            left: -80px;
+            width: 350px;
+            height: 350px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.04);
+        }
+
+        .cover-logo {
+            font-size: 18px;
+            font-weight: 800;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            color: var(--lime-500);
+            margin-bottom: 16px;
+        }
+
+        .cover-title {
+            font-size: 38px;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .cover-subtitle {
+            font-size: 18px;
+            font-weight: 300;
+            color: rgba(255,255,255,0.8);
+            margin-bottom: 48px;
+        }
+
+        .cover-meta {
+            display: flex;
+            gap: 40px;
+            font-size: 13px;
+            color: rgba(255,255,255,0.6);
+        }
+
+        .cover-meta-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .cover-meta-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--lime-500);
+            font-weight: 600;
+        }
+
+        .cover-meta-value {
+            font-weight: 500;
+            color: white;
+        }
+
+        .cover-divider {
+            width: 80px;
+            height: 3px;
+            background: var(--lime-500);
+            border-radius: 2px;
+            margin-bottom: 40px;
+        }
+
+        /* ============================================================
+           TABLE OF CONTENTS
+           ============================================================ */
+        .toc {
+            background: white;
+            padding: 48px 40px;
+            border-radius: 16px;
+            margin: 40px auto;
+            max-width: 900px;
+            box-shadow: 0 2px 12px rgba(12,97,106,0.08);
+            border: 1px solid var(--border);
+        }
+
+        .toc h2 {
+            font-size: 22px;
+            color: var(--teal-900);
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--lime-500);
+            display: inline-block;
+        }
+
+        .toc-list {
+            list-style: none;
+            counter-reset: toc;
+        }
+
+        .toc-list li {
+            counter-increment: toc;
+            padding: 10px 0;
+            border-bottom: 1px dotted var(--border);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .toc-list li::before {
+            content: counter(toc, decimal-leading-zero);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--teal-700);
+            background: var(--teal-100);
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .toc-list a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 15px;
+        }
+
+        .toc-list a:hover {
+            color: var(--teal-700);
+        }
+
+        /* ============================================================
+           CONTENT SECTIONS
+           ============================================================ */
+        .content-section {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            margin: 24px auto;
+            max-width: 900px;
+            box-shadow: 0 2px 12px rgba(12,97,106,0.08);
+            border: 1px solid var(--border);
+        }
+
+        h2 {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--teal-900);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h2 .section-icon {
+            font-size: 24px;
+        }
+
+        h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--teal-800);
+            margin-top: 28px;
+            margin-bottom: 12px;
+        }
+
+        h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-top: 20px;
+            margin-bottom: 8px;
+        }
+
+        p {
+            margin-bottom: 14px;
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+
+        /* ============================================================
+           TABLES
+           ============================================================ */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0 24px;
+            font-size: 13px;
+        }
+
+        thead th {
+            background: linear-gradient(135deg, var(--teal-900), var(--teal-800));
+            color: white;
+            font-weight: 600;
+            text-align: left;
+            padding: 11px 14px;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        thead th:first-child { border-radius: 8px 0 0 0; }
+        thead th:last-child { border-radius: 0 8px 0 0; }
+
+        tbody td {
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--border);
+            vertical-align: top;
+        }
+
+        tbody tr:hover { background: var(--teal-50); }
+        tbody tr:last-child td { border-bottom: none; }
+
+        .mono {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            background: #f1f5f9;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: var(--teal-900);
+        }
+
+        /* ============================================================
+           BADGES / TAGS
+           ============================================================ */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .badge-done {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .badge-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-high {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .badge-medium {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-low {
+            background: #e0f2fe;
+            color: #075985;
+        }
+
+        .badge-input {
+            background: var(--teal-100);
+            color: var(--teal-900);
+        }
+
+        .badge-auto {
+            background: var(--lime-100);
+            color: #3d6b00;
+        }
+
+        /* ============================================================
+           INFO BOXES
+           ============================================================ */
+        .info-box {
+            padding: 16px 20px;
+            border-radius: 10px;
+            margin: 16px 0;
+            font-size: 13px;
+        }
+
+        .info-box.note {
+            background: #eff6ff;
+            border-left: 4px solid #3b82f6;
+            color: #1e40af;
+        }
+
+        .info-box.tip {
+            background: #f0fdf4;
+            border-left: 4px solid #22c55e;
+            color: #166534;
+        }
+
+        .info-box.warning {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            color: #92400e;
+        }
+
+        .info-box strong {
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        /* ============================================================
+           FLOW DIAGRAM (CSS-based)
+           ============================================================ */
+        .flow-diagram {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0;
+            align-items: center;
+            justify-content: center;
+            margin: 24px 0;
+        }
+
+        .flow-box {
+            background: white;
+            border: 2px solid var(--teal-700);
+            border-radius: 12px;
+            padding: 14px 18px;
+            text-align: center;
+            min-width: 140px;
+            position: relative;
+        }
+
+        .flow-box .flow-icon {
+            font-size: 24px;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .flow-box .flow-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--teal-900);
+        }
+
+        .flow-box .flow-sub {
+            font-size: 10px;
+            color: var(--text-muted);
+        }
+
+        .flow-box.highlight {
+            background: var(--teal-100);
+            border-color: var(--teal-900);
+        }
+
+        .flow-box.storage {
+            background: var(--lime-100);
+            border-color: #6d8a00;
+            border-style: dashed;
+        }
+
+        .flow-arrow {
+            font-size: 20px;
+            color: var(--teal-700);
+            margin: 0 8px;
+            font-weight: 700;
+        }
+
+        /* ============================================================
+           FILE TREE
+           ============================================================ */
+        .file-tree {
+            background: #1e293b;
+            color: #e2e8f0;
+            border-radius: 12px;
+            padding: 24px 28px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            line-height: 2;
+            margin: 16px 0;
+            overflow-x: auto;
+        }
+
+        .file-tree .folder {
+            color: #fbbf24;
+        }
+
+        .file-tree .file {
+            color: #7dd3fc;
+        }
+
+        .file-tree .active {
+            color: #4ade80;
+            font-weight: 600;
+        }
+
+        .file-tree .comment {
+            color: #64748b;
+            font-style: italic;
+        }
+
+        /* ============================================================
+           COLOR SWATCH
+           ============================================================ */
+        .swatch-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 12px;
+            margin: 16px 0;
+        }
+
+        .swatch {
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .swatch-color {
+            height: 48px;
+        }
+
+        .swatch-info {
+            padding: 10px 12px;
+            background: white;
+        }
+
+        .swatch-name {
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--text-primary);
+        }
+
+        .swatch-hex {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        /* ============================================================
+           SEQUENCE FLOW
+           ============================================================ */
+        .sequence-step {
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+            margin-bottom: 4px;
+        }
+
+        .step-number {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--teal-900), var(--teal-700));
+            color: white;
+            font-size: 13px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .step-content {
+            flex: 1;
+            padding-bottom: 20px;
+            border-left: 2px solid var(--border);
+            padding-left: 20px;
+            margin-left: -33px;
+            padding-top: 4px;
+        }
+
+        .sequence-step:last-child .step-content {
+            border-left-color: transparent;
+        }
+
+        .step-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .step-desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        /* ============================================================
+           PRINT BUTTON
+           ============================================================ */
+        .print-bar {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 100;
+            display: flex;
+            gap: 10px;
+        }
+
+        .print-btn {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, var(--teal-900), var(--teal-800));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(12,97,106,0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .print-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 28px rgba(12,97,106,0.4);
+        }
+
+        /* ============================================================
+           FOOTER
+           ============================================================ */
+        .doc-footer {
+            text-align: center;
+            padding: 40px 24px;
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+
+        .doc-footer strong {
+            color: var(--teal-900);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .content-section, .toc { padding: 24px 20px; margin: 16px; }
+            .cover-title { font-size: 28px; }
+            .cover-meta { flex-direction: column; gap: 16px; }
+            .swatch-grid { grid-template-columns: 1fr 1fr; }
+            table { font-size: 12px; }
+            thead th, tbody td { padding: 8px 10px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ============================================================
+     COVER PAGE
+     ============================================================ -->
+<div class="cover-page">
+    <div class="cover-logo">PTPN IV</div>
+    <h1 class="cover-title">Dokumentasi Project<br>Dashboard Umum</h1>
+    <div class="cover-divider"></div>
+    <p class="cover-subtitle">Sistem Rekap & Monitoring Perjalanan Dinas<br>Divisi Umum — PT Perkebunan Nusantara IV</p>
+    <div class="cover-meta">
+        <div class="cover-meta-item">
+            <span class="cover-meta-label">Versi</span>
+            <span class="cover-meta-value">1.0</span>
+        </div>
+        <div class="cover-meta-item">
+            <span class="cover-meta-label">Tanggal</span>
+            <span class="cover-meta-value">Juni 2026</span>
+        </div>
+        <div class="cover-meta-item">
+            <span class="cover-meta-label">Status</span>
+            <span class="cover-meta-value">Tahap Pengembangan</span>
+        </div>
+        <div class="cover-meta-item">
+            <span class="cover-meta-label">Platform</span>
+            <span class="cover-meta-value">Web Application</span>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================
+     TABLE OF CONTENTS
+     ============================================================ -->
+<div class="container">
+<div class="toc page-break">
+    <h2>📑 Daftar Isi</h2>
+    <ol class="toc-list">
+        <li><a href="#ringkasan">Ringkasan Project</a></li>
+        <li><a href="#arsitektur">Arsitektur Sistem</a></li>
+        <li><a href="#halaman">Halaman-Halaman Website</a></li>
+        <li><a href="#formulas">Rumus Auto-Calculation</a></li>
+        <li><a href="#fitur">Fitur-Fitur Aplikasi</a></li>
+        <li><a href="#alur-kerja">Alur Kerja User</a></li>
+        <li><a href="#struktur-file">Struktur File Project</a></li>
+        <li><a href="#design-system">Design System</a></li>
+        <li><a href="#status">Status Pengembangan</a></li>
+        <li><a href="#rencana">Rencana Pengembangan Selanjutnya</a></li>
+    </ol>
+</div>
+
+<!-- ============================================================
+     01. RINGKASAN PROJECT
+     ============================================================ -->
+<section class="content-section page-break" id="ringkasan">
+    <h2><span class="section-icon">📋</span> 1. Ringkasan Project</h2>
+    
+    <h3>Latar Belakang</h3>
+    <p>
+        Divisi Umum PTPN IV mengelola data perjalanan dinas untuk seluruh karyawan meliputi tiket pesawat, 
+        hotel, kereta api, sewa mobil, per diem, dan transportasi lokal. Data ini sebelumnya dikelola secara 
+        manual menggunakan file Excel yang terpisah-pisah per vendor dan per kategori.
+    </p>
+
+    <h3>Tujuan</h3>
+    <p>Membangun <strong>Dashboard Rekap Perjalanan Dinas</strong> berbasis web yang dapat:</p>
+    <table>
+        <thead>
+            <tr>
+                <th style="width:40px">No</th>
+                <th>Tujuan</th>
+                <th>Deskripsi</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td><strong>Input Data Manual</strong></td>
+                <td>Menyediakan form input yang mudah digunakan dengan auto-calculation untuk berbagai vendor</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td><strong>Upload Data Excel</strong></td>
+                <td>Mendukung upload file Excel yang sudah ada agar bisa diproses otomatis</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td><strong>Visualisasi Data</strong></td>
+                <td>Menampilkan ringkasan pengeluaran dalam bentuk dashboard, grafik, dan tabel</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td><strong>Export Laporan</strong></td>
+                <td>Menghasilkan file Excel standar yang siap digunakan untuk pelaporan</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Teknologi yang Digunakan</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Komponen</th>
+                <th>Teknologi</th>
+                <th>Keterangan</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Frontend</td>
+                <td><span class="mono">HTML + CSS + JavaScript</span></td>
+                <td>Vanilla (tanpa framework)</td>
+            </tr>
+            <tr>
+                <td>Styling</td>
+                <td><span class="mono">CSS Custom Properties</span></td>
+                <td>Design system berbasis CSS Variables</td>
+            </tr>
+            <tr>
+                <td>Excel Processing</td>
+                <td><span class="mono">SheetJS (xlsx)</span></td>
+                <td>Library untuk baca/tulis file Excel</td>
+            </tr>
+            <tr>
+                <td>Database</td>
+                <td><span class="mono">localStorage</span></td>
+                <td>Penyimpanan lokal di browser (sementara)</td>
+            </tr>
+            <tr>
+                <td>Typography</td>
+                <td><span class="mono">Inter + JetBrains Mono</span></td>
+                <td>Google Fonts</td>
+            </tr>
+            <tr>
+                <td>Server Lokal</td>
+                <td><span class="mono">Python http.server</span></td>
+                <td>Port 8080</td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+<!-- ============================================================
+     02. ARSITEKTUR SISTEM
+     ============================================================ -->
+<section class="content-section page-break" id="arsitektur">
+    <h2><span class="section-icon">🏗️</span> 2. Arsitektur Sistem</h2>
+    
+    <h3>Diagram Alur Data</h3>
+    <p>Berikut alur data dari input hingga output:</p>
+
+    <div style="background:#f8fafb; border-radius:12px; padding:32px 24px; margin:20px 0; border:1px solid var(--border);">
+        <!-- Row 1: Input -->
+        <div style="text-align:center; margin-bottom:8px; font-size:11px; text-transform:uppercase; letter-spacing:2px; color:var(--text-muted); font-weight:600;">Data Input</div>
+        <div class="flow-diagram">
+            <div class="flow-box">
+                <span class="flow-icon">📝</span>
+                <span class="flow-label">Form Manual</span>
+                <span class="flow-sub">input.html</span>
+            </div>
+            <span class="flow-arrow">&</span>
+            <div class="flow-box">
+                <span class="flow-icon">📤</span>
+                <span class="flow-label">Upload Excel</span>
+                <span class="flow-sub">excelParser.js</span>
+            </div>
+        </div>
+
+        <div style="text-align:center; font-size:20px; color:var(--teal-700);">▼</div>
+
+        <!-- Row 2: Processing -->
+        <div style="text-align:center; margin:8px 0; font-size:11px; text-transform:uppercase; letter-spacing:2px; color:var(--text-muted); font-weight:600;">Processing</div>
+        <div class="flow-diagram">
+            <div class="flow-box highlight">
+                <span class="flow-icon">⚡</span>
+                <span class="flow-label">inputForm.js</span>
+                <span class="flow-sub">Validasi & Auto-Calc</span>
+            </div>
+        </div>
+
+        <div style="text-align:center; font-size:20px; color:var(--teal-700);">▼</div>
+
+        <!-- Row 3: Storage -->
+        <div style="text-align:center; margin:8px 0; font-size:11px; text-transform:uppercase; letter-spacing:2px; color:var(--text-muted); font-weight:600;">Storage</div>
+        <div class="flow-diagram">
+            <div class="flow-box storage">
+                <span class="flow-icon">💾</span>
+                <span class="flow-label">localStorage</span>
+                <span class="flow-sub">Database Lokal Browser</span>
+            </div>
+        </div>
+
+        <div style="text-align:center; font-size:20px; color:var(--teal-700);">▼</div>
+
+        <!-- Row 4: Output -->
+        <div style="text-align:center; margin:8px 0; font-size:11px; text-transform:uppercase; letter-spacing:2px; color:var(--text-muted); font-weight:600;">Output</div>
+        <div class="flow-diagram">
+            <div class="flow-box">
+                <span class="flow-icon">📊</span>
+                <span class="flow-label">Dashboard</span>
+                <span class="flow-sub">Visualisasi Data</span>
+            </div>
+            <span class="flow-arrow">&</span>
+            <div class="flow-box">
+                <span class="flow-icon">📥</span>
+                <span class="flow-label">Export Excel</span>
+                <span class="flow-sub">File .xlsx Standar</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="info-box note">
+        <strong>ℹ️ Catatan</strong>
+        Saat ini sistem menggunakan <strong>localStorage</strong> (penyimpanan di browser) sebagai database sementara. 
+        Ke depan akan dimigrasi ke database server agar data bisa diakses bersama oleh banyak user.
+    </div>
+</section>
+
+<!-- ============================================================
+     03. HALAMAN WEBSITE
+     ============================================================ -->
+<section class="content-section page-break" id="halaman">
+    <h2><span class="section-icon">🖥️</span> 3. Halaman-Halaman Website</h2>
+
+    <h3>3.1 Dashboard Utama <span class="badge badge-pending">Belum Aktif</span></h3>
+    <p>
+        Halaman utama yang menampilkan ringkasan seluruh data perjalanan dinas. Terdiri dari:
+    </p>
+    <table>
+        <thead>
+            <tr>
+                <th>Komponen</th>
+                <th>Deskripsi</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><strong>Sidebar Navigasi</strong></td><td>Menu navigasi utama (Dashboard, Upload Data, Laporan, Pengaturan)</td></tr>
+            <tr><td><strong>Filter Bar</strong></td><td>Filter data berdasarkan Divisi, Bulan, Kategori, Vendor</td></tr>
+            <tr><td><strong>KPI Cards</strong></td><td>Total Pengeluaran, Jumlah Trip, Rata-rata per Trip</td></tr>
+            <tr><td><strong>Chart Visualisasi</strong></td><td>Grafik breakdown per kategori pengeluaran</td></tr>
+            <tr><td><strong>Tabel Data</strong></td><td>Detail rekap seluruh data perjalanan dinas</td></tr>
+        </tbody>
+    </table>
+
+    <h3>3.2 Form Input Manual <span class="badge badge-done">✅ Aktif</span></h3>
+    <p>Halaman untuk input data perjalanan dinas secara manual. Terdiri dari 4 section:</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Section</th>
+                <th>Konten</th>
+                <th>Field</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>1. Informasi Umum</strong></td>
+                <td>Data organisasi</td>
+                <td>Tahun Anggaran, Cost Center, Nomor GL, Divisi</td>
+            </tr>
+            <tr>
+                <td><strong>2. Kategori & Vendor</strong></td>
+                <td>Jenis perjalanan</td>
+                <td>Kategori, Vendor (US/FES/Lainnya), No Invoice*, No MPP</td>
+            </tr>
+            <tr>
+                <td><strong>3. Uraian & Tanggal</strong></td>
+                <td>Detail perjalanan</td>
+                <td>Periode, Tgl Berangkat/Kembali, Uraian (rich text)</td>
+            </tr>
+            <tr>
+                <td><strong>4. Nominal & Tagihan</strong></td>
+                <td>Angka-angka keuangan</td>
+                <td>Tagihan, Service Fee, + auto-calculated fields</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="info-box tip">
+        <strong>💡 Fitur Duplikat Entri</strong>
+        Saat klik tombol <strong>+</strong> untuk menambah entri baru, semua field dari entri sebelumnya otomatis ter-copy 
+        <strong>kecuali</strong> Kategori, Tagihan, dan Service Fee — sehingga user tidak perlu mengisi ulang data yang sama.
+    </div>
+
+    <h3>3.3 Upload Data Excel <span class="badge badge-pending">Belum Aktif</span></h3>
+    <p>
+        Halaman untuk upload file Excel yang sudah ada. Sistem akan menggunakan <span class="mono">excelParser.js</span>
+        untuk mem-parse file tersebut secara otomatis. Template Excel tersedia untuk vendor US, FES, dan format standar.
+    </p>
+</section>
+
+<!-- ============================================================
+     04. RUMUS AUTO-CALCULATION
+     ============================================================ -->
+<section class="content-section page-break" id="formulas">
+    <h2><span class="section-icon">🔢</span> 4. Rumus Auto-Calculation</h2>
+    
+    <p>
+        Section 4 (Nominal & Tagihan) menggunakan rumus kalkulasi otomatis yang berbeda tergantung vendor 
+        yang dipilih. Saat user memilih vendor, tabel ringkasan rumus akan tampil di form.
+    </p>
+
+    <h3>4.1 Vendor US (Permata Andalan Wisata)</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Field</th>
+                <th style="width:120px">Tipe</th>
+                <th>Rumus</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Tagihan</td>
+                <td><span class="badge badge-input">✏️ Input Manual</span></td>
+                <td>—</td>
+            </tr>
+            <tr>
+                <td>Service Fee</td>
+                <td><span class="badge badge-input">✏️ Input Manual</span></td>
+                <td>—</td>
+            </tr>
+            <tr>
+                <td>DPP Service Fee</td>
+                <td><span class="badge badge-auto">⚡ Auto</span></td>
+                <td><span class="mono">= 11/12 × Service Fee</span></td>
+            </tr>
+            <tr>
+                <td>PPN 12% dari Tagihan</td>
+                <td><span class="badge badge-auto">⚡ Auto</span></td>
+                <td><span class="mono">= Service Fee × 11%</span></td>
+            </tr>
+            <tr>
+                <td><strong>PPH 23</strong></td>
+                <td><span class="badge badge-auto">⚡ Auto</span></td>
+                <td><span class="mono">= 2% × Service Fee</span></td>
+            </tr>
+            <tr>
+                <td>Tagihan Service setelah Pajak</td>
+                <td><span class="badge badge-auto">⚡ Auto</span></td>
+                <td><span class="mono">= Service Fee + PPN 12% − PPH 23</span></td>
+            </tr>
+            <tr>
+                <td><strong>Jumlah Tagihan</strong></td>
+                <td><span class="badge badge-auto">⚡ Auto</span></td>
+                <td><span class="mono">= Tagihan + Service Fee + PPN 12%</span></td>
+            </tr>
+            <tr>
+                <td><strong>Yang Dibayarkan</strong></td>
+                <td><span class="badge badge-auto">⚡ Auto</span></td>
+                <td><span class="mono">= Jumlah Tagihan − PPH 23</span></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>4.2 Vendor FES (Forever Express Service)</h3>
+    <p>
+        Vendor FES memiliki field <strong>Jumlah (malam/unit)</strong> sebagai pengali untuk Tagihan dan Service Fee.
+        Contoh: jika menginap 2 malam, maka Tagihan dan Service Fee per malam dikalikan 2.
+    </p>
+    <table>
+        <thead>
+            <tr>
+                <th>Field</th>
+                <th style="width:120px">Tipe</th>
+                <th>Rumus</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Tagihan (per unit)</td>
+                <td><span class="badge badge-input">✏️ Input Manual</span></td>
+                <td>—</td>
+            </tr>
+            <tr>
+                <td>Service Fee (per unit)</td>
+                <td><span class="badge badge-input">✏️ Input Manual</span></td>
+                <td>—</td>
+            </tr>
+            <tr>
+                <td>Jumlah (malam/unit)</td>
+                <td><span class="badge badge-input">✏️ Input Manual</span></td>
+                <td>—</td>
+            </tr>
+            <tr>
+                <td><strong>PPH 23</strong></td>
+                <td><span class="badge badge-auto">⚡ Auto</span></td>
+                <td><span class="mono">= 2% × (Service Fee × Jumlah)</span></td>
+            </tr>
+            <tr>
+                <td><strong>Jumlah Tagihan</strong></td>
+                <td><span class="badge badge-auto">⚡ Auto</span></td>
+                <td><span class="mono">= (Tagihan × Jumlah) + (Service Fee × Jumlah)</span></td>
+            </tr>
+            <tr>
+                <td><strong>Yang Dibayarkan</strong></td>
+                <td><span class="badge badge-auto">⚡ Auto</span></td>
+                <td><span class="mono">= Jumlah Tagihan − PPH 23</span></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h4>Contoh Perhitungan FES (dari Invoice)</h4>
+    <table>
+        <thead>
+            <tr>
+                <th>Input</th>
+                <th>Nilai</th>
+                <th>Hasil</th>
+                <th>Nilai</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Tagihan per malam</td>
+                <td><span class="mono">Rp 2.300.000</span></td>
+                <td>Total Tagihan (×2)</td>
+                <td><span class="mono">Rp 4.600.000</span></td>
+            </tr>
+            <tr>
+                <td>Service Fee per malam</td>
+                <td><span class="mono">Rp 115.000</span></td>
+                <td>Total Service Fee (×2)</td>
+                <td><span class="mono">Rp 230.000</span></td>
+            </tr>
+            <tr>
+                <td>Jumlah</td>
+                <td><span class="mono">2</span></td>
+                <td>PPH 23 (2% × 230.000)</td>
+                <td><span class="mono">Rp 4.600</span></td>
+            </tr>
+            <tr>
+                <td colspan="2"></td>
+                <td><strong>Jumlah Tagihan</strong></td>
+                <td><span class="mono"><strong>Rp 4.830.000</strong></span></td>
+            </tr>
+            <tr>
+                <td colspan="2"></td>
+                <td><strong>Yang Dibayarkan</strong></td>
+                <td><span class="mono"><strong>Rp 4.825.400</strong></span></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>4.3 Vendor Lainnya</h3>
+    <p>Untuk vendor selain US dan FES, semua field diinput secara manual: Tagihan, Service Fee, dan Yang Dibayarkan.</p>
+</section>
+
+<!-- ============================================================
+     05. FITUR APLIKASI
+     ============================================================ -->
+<section class="content-section page-break" id="fitur">
+    <h2><span class="section-icon">⚙️</span> 5. Fitur-Fitur Aplikasi</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th style="width:40px">No</th>
+                <th>Fitur</th>
+                <th>Deskripsi</th>
+                <th style="width:80px">Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td><strong>Form Input Manual</strong></td>
+                <td>Form 4 section dengan validasi lengkap untuk input data perjalanan dinas</td>
+                <td><span class="badge badge-done">✅ Selesai</span></td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td><strong>Auto-Calculation</strong></td>
+                <td>Perhitungan otomatis DPP, PPN, PPH23, Jumlah Tagihan — berbeda per vendor</td>
+                <td><span class="badge badge-done">✅ Selesai</span></td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td><strong>Tabel Ringkasan Rumus</strong></td>
+                <td>Tampilan visual rumus yang muncul saat vendor dipilih</td>
+                <td><span class="badge badge-done">✅ Selesai</span></td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td><strong>Multi-Entry Tabs</strong></td>
+                <td>Input banyak data dalam satu sesi menggunakan tab (Isi 1, Isi 2, ...)</td>
+                <td><span class="badge badge-done">✅ Selesai</span></td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td><strong>Duplikat Entri</strong></td>
+                <td>Klik + otomatis copy data sebelumnya, kecuali Kategori/Tagihan/Service Fee</td>
+                <td><span class="badge badge-done">✅ Selesai</span></td>
+            </tr>
+            <tr>
+                <td>6</td>
+                <td><strong>Database Lokal</strong></td>
+                <td>Data tersimpan di localStorage browser, tetap ada walau refresh halaman</td>
+                <td><span class="badge badge-done">✅ Selesai</span></td>
+            </tr>
+            <tr>
+                <td>7</td>
+                <td><strong>Export Excel</strong></td>
+                <td>Download file .xlsx dengan 2 sheet: Data Rekap (standar) + Detail Lengkap</td>
+                <td><span class="badge badge-done">✅ Selesai</span></td>
+            </tr>
+            <tr>
+                <td>8</td>
+                <td><strong>Preview Table</strong></td>
+                <td>Tabel preview semua data yang sudah diinput, dengan tombol Edit & Hapus</td>
+                <td><span class="badge badge-done">✅ Selesai</span></td>
+            </tr>
+            <tr>
+                <td>9</td>
+                <td><strong>Edit & Hapus Entri</strong></td>
+                <td>Bisa mengedit atau menghapus data per entri dari preview table</td>
+                <td><span class="badge badge-done">✅ Selesai</span></td>
+            </tr>
+            <tr>
+                <td>10</td>
+                <td><strong>Currency Formatting</strong></td>
+                <td>Format Rp otomatis saat mengetik nominal (format ribuan Indonesia)</td>
+                <td><span class="badge badge-done">✅ Selesai</span></td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+<!-- ============================================================
+     06. ALUR KERJA USER
+     ============================================================ -->
+<section class="content-section page-break" id="alur-kerja">
+    <h2><span class="section-icon">🔄</span> 6. Alur Kerja User</h2>
+
+    <h3>Skenario: Input Data DMRS (3 baris — Pesawat, Hotel, Kereta)</h3>
+
+    <div style="margin:24px 0;">
+        <div class="sequence-step">
+            <div class="step-number">1</div>
+            <div class="step-content">
+                <div class="step-title">Buka halaman input.html</div>
+                <div class="step-desc">Jika ada data sebelumnya di localStorage, data otomatis dimuat.</div>
+            </div>
+        </div>
+        <div class="sequence-step">
+            <div class="step-number">2</div>
+            <div class="step-content">
+                <div class="step-title">Isi Entri Pertama (Pesawat)</div>
+                <div class="step-desc">Isi semua section: Cost Center, Nomor GL, Divisi, Vendor → US, Kategori → Pesawat, Tagihan, Service Fee, Uraian. Klik <strong>Simpan Entri</strong>.</div>
+            </div>
+        </div>
+        <div class="sequence-step">
+            <div class="step-number">3</div>
+            <div class="step-content">
+                <div class="step-title">Klik tombol (+) untuk entri baru</div>
+                <div class="step-desc">Semua field ter-copy otomatis dari entri pertama. <strong>Hanya perlu ganti:</strong> Kategori → Hotel, Tagihan, Service Fee.</div>
+            </div>
+        </div>
+        <div class="sequence-step">
+            <div class="step-number">4</div>
+            <div class="step-content">
+                <div class="step-title">Simpan entri kedua (Hotel)</div>
+                <div class="step-desc">Data tersimpan dan auto-save ke localStorage.</div>
+            </div>
+        </div>
+        <div class="sequence-step">
+            <div class="step-number">5</div>
+            <div class="step-content">
+                <div class="step-title">Ulangi untuk entri ketiga (Kereta)</div>
+                <div class="step-desc">Klik (+), ganti Kategori → Kereta, isi nominal baru, simpan.</div>
+            </div>
+        </div>
+        <div class="sequence-step">
+            <div class="step-number">6</div>
+            <div class="step-content">
+                <div class="step-title">Review di Preview Table</div>
+                <div class="step-desc">Cek semua 3 entri di tabel preview bawah. Edit jika ada yang salah.</div>
+            </div>
+        </div>
+        <div class="sequence-step">
+            <div class="step-number">7</div>
+            <div class="step-content">
+                <div class="step-title">Export ke Excel</div>
+                <div class="step-desc">Klik <strong>📊 Export Excel</strong> → file .xlsx ter-download dengan 2 sheet.</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="info-box tip">
+        <strong>💡 Tips</strong>
+        Data otomatis tersimpan di browser setiap kali klik "Simpan Entri". Jadi meskipun Anda menutup browser 
+        dan membuka kembali esok hari, data tetap ada. Gunakan tombol <strong>🗑️ Hapus Semua</strong> untuk 
+        membersihkan data setelah selesai export.
+    </div>
+</section>
+
+<!-- ============================================================
+     07. STRUKTUR FILE
+     ============================================================ -->
+<section class="content-section page-break" id="struktur-file">
+    <h2><span class="section-icon">📁</span> 7. Struktur File Project</h2>
+
+    <div class="file-tree">
+<span class="folder">Dasboard_Umum/</span>
+├── <span class="active">input.html</span>                    <span class="comment">← Form input manual (AKTIF)</span>
+├── <span class="file">generate_template.js</span>          <span class="comment">← Generator template Excel</span>
+│
+├── <span class="folder">css/</span>
+│   └── <span class="active">input-form.css</span>            <span class="comment">← Styling form input</span>
+│
+├── <span class="folder">js/</span>
+│   ├── <span class="active">inputForm.js</span>              <span class="comment">← Logika utama form</span>
+│   ├── <span class="file">excelParser.js</span>            <span class="comment">← Parser file Excel</span>
+│   └── <span class="file">pesawatUploadHandler.js</span>   <span class="comment">← Handler upload pesawat</span>
+│
+├── <span class="folder">templates/</span>
+│   ├── <span class="file">Template_Standar_Pesawat.xlsx</span>
+│   ├── <span class="file">Template_Vendor_FES_Pesawat.xlsx</span>
+│   └── <span class="file">Template_Vendor_US_Pesawat.xlsx</span>
+│
+└── <span class="folder">stitch_extracted/</span>
+    ├── <span class="file">code.html</span>                 <span class="comment">← Dashboard utama (mockup)</span>
+    ├── <span class="file">DESIGN.md</span>                 <span class="comment">← Design system</span>
+    └── <span class="file">screen.png</span>                <span class="comment">← Screenshot desain</span>
+    </div>
+
+    <h3>Penjelasan File Utama</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>File</th>
+                <th>Ukuran</th>
+                <th>Fungsi</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="mono">inputForm.js</span></td>
+                <td>~41 KB</td>
+                <td>Logika utama: validasi, auto-calculation, localStorage, multi-entry, duplikat, export Excel</td>
+            </tr>
+            <tr>
+                <td><span class="mono">input-form.css</span></td>
+                <td>~18 KB</td>
+                <td>Seluruh styling halaman form input (design system, responsif, animasi)</td>
+            </tr>
+            <tr>
+                <td><span class="mono">input.html</span></td>
+                <td>~19 KB</td>
+                <td>Struktur HTML halaman form input (4 section + preview table)</td>
+            </tr>
+            <tr>
+                <td><span class="mono">excelParser.js</span></td>
+                <td>~14 KB</td>
+                <td>Parser untuk membaca file Excel yang di-upload (multi-format)</td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+<!-- ============================================================
+     08. DESIGN SYSTEM
+     ============================================================ -->
+<section class="content-section page-break" id="design-system">
+    <h2><span class="section-icon">🎨</span> 8. Design System</h2>
+
+    <h3>Brand: Agro-Corporate Professional</h3>
+    <p>
+        Design system menggunakan konsep <strong>"Clean-Tech"</strong> — memadukan asosiasi organik dari warna teal/lime 
+        dengan presisi platform SaaS modern. UI dirancang untuk menyampaikan stabilitas dan pertumbuhan institusional.
+    </p>
+
+    <h3>Palet Warna</h3>
+    <div class="swatch-grid">
+        <div class="swatch">
+            <div class="swatch-color" style="background:#0c616a;"></div>
+            <div class="swatch-info"><div class="swatch-name">Dark Teal (Sidebar)</div><div class="swatch-hex">#0c616a</div></div>
+        </div>
+        <div class="swatch">
+            <div class="swatch-color" style="background:#006670;"></div>
+            <div class="swatch-info"><div class="swatch-name">Primary Teal</div><div class="swatch-hex">#006670</div></div>
+        </div>
+        <div class="swatch">
+            <div class="swatch-color" style="background:#1594a2;"></div>
+            <div class="swatch-info"><div class="swatch-name">Teal Accent</div><div class="swatch-hex">#1594a2</div></div>
+        </div>
+        <div class="swatch">
+            <div class="swatch-color" style="background:#b6d250;"></div>
+            <div class="swatch-info"><div class="swatch-name">Accent Lime</div><div class="swatch-hex">#b6d250</div></div>
+        </div>
+        <div class="swatch">
+            <div class="swatch-color" style="background:#f8fafb;"></div>
+            <div class="swatch-info"><div class="swatch-name">Background</div><div class="swatch-hex">#f8fafb</div></div>
+        </div>
+        <div class="swatch">
+            <div class="swatch-color" style="background:#1a2e35;"></div>
+            <div class="swatch-info"><div class="swatch-name">Text Primary</div><div class="swatch-hex">#1a2e35</div></div>
+        </div>
+    </div>
+
+    <h3>Typography</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Font</th>
+                <th>Penggunaan</th>
+                <th>Contoh</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Inter</strong></td>
+                <td>Semua UI: label, navigasi, body text, heading</td>
+                <td style="font-family:Inter;">Dashboard Umum PTPN IV</td>
+            </tr>
+            <tr>
+                <td><strong>JetBrains Mono</strong></td>
+                <td>Angka keuangan, currency, data tabel</td>
+                <td style="font-family:'JetBrains Mono',monospace;">Rp 4.830.000</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Komponen UI</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Komponen</th>
+                <th>Spesifikasi</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>Card Radius</td><td><span class="mono">16px</span></td></tr>
+            <tr><td>Button Radius</td><td><span class="mono">12px</span></td></tr>
+            <tr><td>Input Radius</td><td><span class="mono">10px</span></td></tr>
+            <tr><td>Card Shadow</td><td><span class="mono">0 2px 12px rgba(12,97,106,0.08)</span></td></tr>
+            <tr><td>Hover Shadow</td><td><span class="mono">0 8px 24px rgba(12,97,106,0.15)</span></td></tr>
+            <tr><td>Input Focus</td><td><span class="mono">0 0 0 3px rgba(21,148,162,0.15)</span></td></tr>
+        </tbody>
+    </table>
+</section>
+
+<!-- ============================================================
+     09. STATUS PENGEMBANGAN
+     ============================================================ -->
+<section class="content-section page-break" id="status">
+    <h2><span class="section-icon">📊</span> 9. Status Pengembangan</h2>
+
+    <h3>Progress Keseluruhan</h3>
+    <div style="background:#f1f5f9; border-radius:12px; padding:20px; margin:16px 0;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <span style="font-weight:600; font-size:14px;">Fitur Selesai: 10 dari 18</span>
+            <span style="font-family:'JetBrains Mono',monospace; font-weight:600; color:var(--teal-900);">55%</span>
+        </div>
+        <div style="background:#e2e8f0; border-radius:8px; height:12px; overflow:hidden;">
+            <div style="background:linear-gradient(90deg, var(--teal-900), var(--teal-700)); width:55%; height:100%; border-radius:8px;"></div>
+        </div>
+    </div>
+
+    <h3>Detail Status per Fitur</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Fitur</th>
+                <th style="width:100px">Prioritas</th>
+                <th style="width:100px">Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Form Input Manual (4 section)</td>
+                <td><span class="badge badge-high">🔴 Tinggi</span></td>
+                <td><span class="badge badge-done">✅ Selesai</span></td>
+            </tr>
+            <tr>
+                <td>Auto-Calculation (US + FES)</td>
+                <td><span class="badge badge-high">🔴 Tinggi</span></td>
+                <td><span class="badge badge-done">✅ Selesai</span></td>
+            </tr>
+            <tr>
+                <td>Multi-Entry + Duplikat</td>
+                <td><span class="badge badge-high">🔴 Tinggi</span></td>
+                <td><span class="badge badge-done">✅ Selesai</span></td>
+            </tr>
+            <tr>
+                <td>Export Excel</td>
+                <td><span class="badge badge-high">🔴 Tinggi</span></td>
+                <td><span class="badge badge-done">✅ Selesai</span></td>
+            </tr>
+            <tr>
+                <td>Database Lokal (localStorage)</td>
+                <td><span class="badge badge-high">🔴 Tinggi</span></td>
+                <td><span class="badge badge-done">✅ Selesai</span></td>
+            </tr>
+            <tr style="background:#fef3c7;">
+                <td><strong>Dashboard Utama (integrasi data)</strong></td>
+                <td><span class="badge badge-high">🔴 Tinggi</span></td>
+                <td><span class="badge badge-pending">⬜ Belum</span></td>
+            </tr>
+            <tr style="background:#fef3c7;">
+                <td><strong>Halaman Upload Excel</strong></td>
+                <td><span class="badge badge-high">🔴 Tinggi</span></td>
+                <td><span class="badge badge-pending">⬜ Belum</span></td>
+            </tr>
+            <tr style="background:#fef3c7;">
+                <td><strong>Navigasi antar halaman</strong></td>
+                <td><span class="badge badge-medium">🟡 Sedang</span></td>
+                <td><span class="badge badge-pending">⬜ Belum</span></td>
+            </tr>
+            <tr style="background:#fef3c7;">
+                <td><strong>Filter & Search</strong></td>
+                <td><span class="badge badge-medium">🟡 Sedang</span></td>
+                <td><span class="badge badge-pending">⬜ Belum</span></td>
+            </tr>
+            <tr style="background:#fef3c7;">
+                <td><strong>Halaman Laporan</strong></td>
+                <td><span class="badge badge-medium">🟡 Sedang</span></td>
+                <td><span class="badge badge-pending">⬜ Belum</span></td>
+            </tr>
+            <tr style="background:#fef3c7;">
+                <td><strong>Chart/Grafik Visualisasi</strong></td>
+                <td><span class="badge badge-medium">🟡 Sedang</span></td>
+                <td><span class="badge badge-pending">⬜ Belum</span></td>
+            </tr>
+            <tr style="background:#fef3c7;">
+                <td><strong>Dark Mode</strong></td>
+                <td><span class="badge badge-low">🟢 Rendah</span></td>
+                <td><span class="badge badge-pending">⬜ Belum</span></td>
+            </tr>
+            <tr style="background:#fef3c7;">
+                <td><strong>Backend / Database Server</strong></td>
+                <td><span class="badge badge-low">🟢 Rendah</span></td>
+                <td><span class="badge badge-pending">⬜ Belum</span></td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+<!-- ============================================================
+     10. RENCANA SELANJUTNYA
+     ============================================================ -->
+<section class="content-section" id="rencana">
+    <h2><span class="section-icon">🚀</span> 10. Rencana Pengembangan Selanjutnya</h2>
+
+    <h3>Fase 2: Dashboard & Navigasi</h3>
+    <table>
+        <thead>
+            <tr>
+                <th style="width:40px">No</th>
+                <th>Task</th>
+                <th>Deskripsi</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>1</td><td><strong>Integrasi Dashboard</strong></td><td>Menghubungkan code.html dengan data dari localStorage sehingga KPI cards dan tabel menampilkan data real</td></tr>
+            <tr><td>2</td><td><strong>Navigasi Sidebar</strong></td><td>Membuat sidebar navigasi berfungsi menghubungkan semua halaman</td></tr>
+            <tr><td>3</td><td><strong>Halaman Upload</strong></td><td>Membuat UI upload Excel dengan drag-and-drop dan preview data sebelum submit</td></tr>
+        </tbody>
+    </table>
+
+    <h3>Fase 3: Visualisasi & Laporan</h3>
+    <table>
+        <thead>
+            <tr>
+                <th style="width:40px">No</th>
+                <th>Task</th>
+                <th>Deskripsi</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>4</td><td><strong>Chart Library</strong></td><td>Integrasi Chart.js atau ApexCharts untuk grafik interaktif</td></tr>
+            <tr><td>5</td><td><strong>Filter & Search</strong></td><td>Implementasi filter berdasarkan divisi, bulan, kategori, vendor</td></tr>
+            <tr><td>6</td><td><strong>Halaman Laporan</strong></td><td>Generate laporan per divisi dengan opsi cetak/export</td></tr>
+        </tbody>
+    </table>
+
+    <h3>Fase 4: Produksi (Opsional)</h3>
+    <table>
+        <thead>
+            <tr>
+                <th style="width:40px">No</th>
+                <th>Task</th>
+                <th>Deskripsi</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>7</td><td><strong>Backend API</strong></td><td>Migrasi dari localStorage ke database server (MySQL/PostgreSQL)</td></tr>
+            <tr><td>8</td><td><strong>Login & Auth</strong></td><td>Sistem login per divisi dengan role-based access</td></tr>
+            <tr><td>9</td><td><strong>Deploy</strong></td><td>Deploy ke server internal PTPN IV atau cloud</td></tr>
+        </tbody>
+    </table>
+
+    <div class="info-box warning">
+        <strong>⚠️ Penting</strong>
+        Saat ini data tersimpan di browser (localStorage) dan <strong>hanya bisa diakses dari komputer yang sama</strong>. 
+        Untuk penggunaan multi-user atau akses dari komputer lain, perlu migrasi ke database server (Fase 4).
+    </div>
+</section>
+
+<!-- FOOTER -->
+<div class="doc-footer">
+    <p>📄 <strong>Dokumentasi Project Dashboard Umum PTPN IV</strong></p>
+    <p>Versi 1.0 — Juni 2026</p>
+    <p style="margin-top:8px;">Untuk menyimpan sebagai PDF: tekan <strong>Ctrl + P</strong> → pilih <strong>Save as PDF</strong></p>
+</div>
+
+</div><!-- end container -->
+
+<!-- Print Button -->
+<div class="print-bar no-print">
+    <button class="print-btn" onclick="window.print()">
+        🖨️ Cetak / Simpan PDF
+    </button>
+</div>
+
+</body>
+</html>

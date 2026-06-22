@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Upload Data Excel - PTPN IV</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script id="tailwind-config">
+tailwind.config = {
+    darkMode: 'class',
+    theme: {
+        extend: {
+            colors: {
+                'primary': '#006670', 'on-primary': '#ffffff', 'primary-container': '#00818e',
+                'on-primary-container': '#f7feff', 'secondary': '#536600', 'secondary-container': '#d2ef69',
+                'tertiary': '#15656e', 'tertiary-container': '#367e88', 'error': '#ba1a1a',
+                'error-container': '#ffdad6', 'surface': '#f6fafb', 'surface-variant': '#dfe3e4',
+                'surface-container-lowest': '#ffffff', 'surface-container-low': '#f0f4f5',
+                'surface-container': '#eaefef', 'surface-container-high': '#e4e9ea',
+                'surface-bright': '#f6fafb', 'on-surface': '#171c1d', 'on-surface-variant': '#3d494b',
+                'outline': '#6d797b', 'outline-variant': '#bdc9cb', 'background': '#f6fafb',
+                'secondary-fixed-dim': '#b6d250', 'inverse-primary': '#6dd5e4',
+                'surface-tint': '#006973'
+            },
+            fontFamily: {
+                'label-sm': ['Inter'], 'headline-md': ['Inter'], 'display-lg': ['Inter'],
+                'financial-sm': ['JetBrains Mono'], 'body-base': ['Inter'], 'financial-lg': ['JetBrains Mono']
+            },
+            fontSize: {
+                'label-sm': ['13px', {lineHeight: '18px', fontWeight: '500'}],
+                'headline-md': ['24px', {lineHeight: '32px', letterSpacing: '-0.01em', fontWeight: '600'}],
+                'display-lg': ['32px', {lineHeight: '40px', letterSpacing: '-0.02em', fontWeight: '700'}],
+                'financial-sm': ['14px', {lineHeight: '20px', fontWeight: '500'}],
+                'body-base': ['16px', {lineHeight: '24px', fontWeight: '400'}],
+                'financial-lg': ['20px', {lineHeight: '28px', fontWeight: '600'}]
+            },
+            spacing: {'card-gap': '20px', 'gutter': '16px', 'container-padding': '24px'},
+            borderRadius: {'DEFAULT': '0.25rem', 'lg': '0.5rem', 'xl': '0.75rem', 'full': '9999px'}
+        }
+    }
+}
+</script>
+<style>
+body { font-family: 'Inter', sans-serif; }
+.card-shadow { box-shadow: 0 2px 12px rgba(12,97,106,0.08); }
+.nav-link { transition: all 0.2s; border-left: 4px solid transparent; }
+.nav-link:hover { color: white !important; background: rgba(13,148,136,0.2); }
+.nav-link.active { color: #b6d250 !important; border-left-color: #b6d250; background: rgba(13,148,136,0.2); }
+/* Drag zone */
+.drop-zone { transition: all 0.2s; }
+.drop-zone.drag-over { border-color: #006670 !important; background: #f0f4f5 !important; }
+/* Progress bar */
+.progress-bar { height: 4px; border-radius: 2px; background: #dfe3e4; overflow: hidden; }
+.progress-fill { height: 100%; border-radius: 2px; background: linear-gradient(90deg, #006670, #15656e); transition: width 0.3s; }
+/* Table */
+.preview-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.preview-table th { padding: 10px 12px; text-align: right; font-weight: 600; color: #3d494b; background: #f0f4f5; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; }
+.preview-table th:first-child, .preview-table th:nth-child(2), .preview-table th:nth-child(3) { text-align: left; }
+.preview-table td { padding: 9px 12px; border-bottom: 1px solid #eaefef; text-align: right; font-family: 'JetBrains Mono', monospace; }
+.preview-table td:first-child, .preview-table td:nth-child(2), .preview-table td:nth-child(3) { text-align: left; font-family: 'Inter', sans-serif; }
+.preview-table tr:hover { background: #f6fafb; }
+.subtotal-row { background: #f0f4f5 !important; font-weight: 700; }
+.subtotal-row td { color: #006670; border-top: 2px solid #bdc9cb; border-bottom: 2px solid #bdc9cb; }
+.grandtotal-row { background: #006670 !important; }
+.grandtotal-row td { color: white !important; font-weight: 700; border: none; font-size: 13px; }
+/* Badge */
+.badge-fes { background: #d2ef69; color: #3e4c00; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+.badge-us { background: #a8eef8; color: #001f23; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+.badge-unknown { background: #ffdad6; color: #93000a; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+.badge-success { background: #d2ef69; color: #3e4c00; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+.badge-failed { background: #ffdad6; color: #93000a; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+/* Toast */
+.toast { position: fixed; bottom: 24px; right: 24px; background: #006670; color: white; padding: 12px 20px; border-radius: 10px; font-size: 13px; z-index: 9999; transform: translateY(80px); opacity: 0; transition: all 0.3s; }
+.toast.show { transform: translateY(0); opacity: 1; }
+/* Modal */
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 1000; align-items: center; justify-content: center; }
+.modal-overlay.open { display: flex; }
+.modal-box { background: white; border-radius: 16px; padding: 28px; max-width: 640px; width: 95%; max-height: 80vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
+.select-field { width: 100%; border: 1px solid #bdc9cb; border-radius: 8px; padding: 8px 12px; font-size: 13px; outline: none; background: #f6fafb; }
+.select-field:focus { border-color: #006670; box-shadow: 0 0 0 2px rgba(0,102,112,0.15); }
+</style>
+</head>
+<body class="bg-background text-on-surface antialiased flex">
+
+<!-- SIDEBAR -->
+<nav class="bg-[#0c616a] fixed h-screen w-[260px] left-0 top-0 border-r border-teal-900/20 shadow-xl flex flex-col pt-6 pb-4 z-50">
+    <div class="px-6 mb-8 pt-6">
+        <h1 class="text-[20px] font-black tracking-tight text-white leading-tight uppercase">PTPN IV</h1>
+        <p class="text-[12px] tracking-wide text-teal-200/70 mt-1">Agro-Corporate Portal</p>
+    </div>
+    <div class="flex flex-col gap-1 flex-1 text-sm tracking-wide">
+        <a class="nav-link flex items-center gap-4 px-6 py-4 text-white/70" href="index.html">
+            <span class="material-symbols-outlined">dashboard</span><span>Dashboard</span>
+        </a>
+        <a class="nav-link flex items-center gap-4 px-6 py-4 text-white/70" href="input.html">
+            <span class="material-symbols-outlined">edit_note</span><span>Input Data</span>
+        </a>
+        <a class="nav-link active flex items-center gap-4 px-6 py-4" href="upload.html">
+            <span class="material-symbols-outlined">cloud_upload</span><span>Upload Data</span>
+        </a>
+        <a class="nav-link flex items-center gap-4 px-6 py-4 text-white/70" href="laporan.html">
+            <span class="material-symbols-outlined">description</span><span>Laporan</span>
+        </a>
+        <a class="nav-link flex items-center gap-4 px-6 py-4 text-white/70" href="rkap.html">
+            <span class="material-symbols-outlined">account_balance_wallet</span><span>RKAP</span>
+        </a>
+        <a class="nav-link flex items-center gap-4 px-6 py-4 text-white/70" href="pengaturan.html">
+            <span class="material-symbols-outlined">settings</span><span>Pengaturan</span>
+        </a>
+    </div>
+    <div class="mt-auto p-6 border-t border-teal-900/50">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-teal-700 text-white font-bold text-sm flex items-center justify-center">BS</div>
+            <div><span class="text-white font-bold text-[14px] block">Budi Santoso</span><span class="text-teal-200/70 text-[11px]">Finance Director</span></div>
+        </div>
+    </div>
+</nav>
+
+<!-- TOPBAR -->
+<header class="fixed top-0 left-[260px] right-0 h-16 bg-white border-b border-slate-100 shadow-[0_2px_12px_rgba(12,97,106,0.08)] flex items-center justify-between px-8 z-40">
+    <div class="flex items-center gap-3">
+        <span class="text-lg font-bold text-[#0c616a]">Upload Data Excel</span>
+        <span id="formatBadge" class="hidden"></span>
+    </div>
+    <div class="flex items-center gap-4">
+        <button onclick="processUpload()" id="btnProses" disabled class="flex items-center gap-2 bg-primary text-white px-5 py-2 rounded-lg text-[13px] font-semibold disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[#004f57] transition-colors">
+            <span class="material-symbols-outlined text-[18px]">publish</span>Proses Upload
+        </button>
+        <div class="w-8 h-8 rounded-full bg-teal-700 text-white text-xs font-bold flex items-center justify-center">BS</div>
+    </div>
+</header>
+
+<!-- MAIN -->
+<main class="ml-[260px] pt-20 px-6 pb-12 flex-1">
+    <div class="max-w-[1400px] mx-auto">
+
+        <!-- Page Title -->
+        <div class="mb-6">
+            <h1 class="text-[28px] font-bold text-on-surface">Upload Data Excel</h1>
+            <p class="text-on-surface-variant text-sm mt-1">Unggah file .xlsx atau .xls untuk memproses data tagihan divisi. Mendukung format FES, US, dan format kustom.</p>
+        </div>
+
+        <div class="grid grid-cols-12 gap-5">
+
+            <!-- LEFT COLUMN -->
+            <div class="col-span-12 xl:col-span-4 flex flex-col gap-5">
+
+                <!-- Drop Zone -->
+                <div class="bg-surface-container-lowest rounded-2xl card-shadow p-8 flex flex-col items-center justify-center border-2 border-dashed border-outline-variant drop-zone cursor-pointer text-center relative min-h-[280px]" id="dropZone" onclick="document.getElementById('fileInput').click()">
+                    <div class="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4" id="uploadIcon">
+                        <span class="material-symbols-outlined text-primary text-[36px]">cloud_upload</span>
+                    </div>
+                    <h3 class="text-[18px] font-semibold text-on-surface mb-2">Drag &amp; Drop File</h3>
+                    <p class="text-on-surface-variant text-[13px] mb-5">atau klik untuk pilih dari perangkat Anda</p>
+                    <div class="flex flex-wrap gap-2 justify-center">
+                        <span class="bg-surface-container text-on-surface-variant px-3 py-1 rounded-full text-[11px] font-medium">📄 Format FES</span>
+                        <span class="bg-surface-container text-on-surface-variant px-3 py-1 rounded-full text-[11px] font-medium">📊 Format US</span>
+                        <span class="bg-surface-container text-on-surface-variant px-3 py-1 rounded-full text-[11px] font-medium">🔧 Kustom</span>
+                    </div>
+                    <p class="text-[11px] text-outline mt-3">.xlsx, .xls — Max 10MB</p>
+                    <input type="file" id="fileInput" accept=".xlsx,.xls" class="hidden" onchange="handleFileSelect(this.files[0])">
+                </div>
+
+                <!-- File Info Card (hidden until file selected) -->
+                <div id="fileInfoCard" class="hidden bg-surface-container-lowest rounded-2xl card-shadow p-5">
+                    <div class="flex items-start gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+                            <span class="material-symbols-outlined text-primary">table_chart</span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="font-semibold text-[13px] text-on-surface truncate" id="fileName">—</p>
+                            <p class="text-[12px] text-on-surface-variant mt-0.5" id="fileSize">—</p>
+                            <p class="text-[12px] text-on-surface-variant" id="fileRows">—</p>
+                        </div>
+                        <button onclick="clearFile()" class="p-1 rounded-full hover:bg-surface-container text-outline hover:text-error transition-colors">
+                            <span class="material-symbols-outlined text-[18px]">close</span>
+                        </button>
+                    </div>
+                    <!-- Progress bar -->
+                    <div class="progress-bar mt-4">
+                        <div class="progress-fill" id="progressFill" style="width:0%"></div>
+                    </div>
+                    <p class="text-[11px] text-on-surface-variant mt-1" id="progressText">Menunggu proses...</p>
+                </div>
+
+                <!-- Format Info -->
+                <div class="bg-surface-container-lowest rounded-2xl card-shadow p-5">
+                    <h3 class="font-semibold text-[14px] text-on-surface mb-3 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-tertiary text-[20px]">info</span>
+                        Format yang Didukung
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="p-3 rounded-xl bg-secondary-fixed/20 border border-secondary-fixed/50">
+                            <p class="font-bold text-[12px] text-secondary">📄 Format FES</p>
+                            <p class="text-[11px] text-on-surface-variant mt-1">NO | NO MPP | NO | SAP | COST CENTER | DIVISI | TAGIHAN | SERVICE FEE | JUMLAH TAGIHAN | PPH23 | YANG DIBAYARKAN | URAIAN</p>
+                        </div>
+                        <div class="p-3 rounded-xl bg-blue-50 border border-blue-100">
+                            <p class="font-bold text-[12px] text-blue-700">📊 Format US</p>
+                            <p class="text-[11px] text-on-surface-variant mt-1">No | SAP | No. MPP | Cost Center | Divisi | Tagihan | Service Fee | DPP Service Fee | PPN 12% | PPH23 | Tagihan Service | Jumlah Tagihan | Yang Dibayarkan | Uraian</p>
+                        </div>
+                        <div class="p-3 rounded-xl bg-orange-50 border border-orange-100">
+                            <p class="font-bold text-[12px] text-orange-700">🔧 Format Kustom</p>
+                            <p class="text-[11px] text-on-surface-variant mt-1">Format lain akan memunculkan Column Mapper untuk pemetaan kolom secara manual.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Upload History -->
+                <div class="bg-surface-container-lowest rounded-2xl card-shadow p-5">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="font-semibold text-[16px] text-on-surface">Upload History</h3>
+                        <button onclick="clearHistory()" class="text-[12px] text-outline hover:text-error transition-colors">Hapus Semua</button>
+                    </div>
+                    <div id="historyList" class="space-y-2"></div>
+                    <p id="historyEmpty" class="text-[13px] text-on-surface-variant text-center py-4">Belum ada history</p>
+                </div>
+            </div>
+
+            <!-- RIGHT COLUMN: Preview -->
+            <div class="col-span-12 xl:col-span-8">
+                <div class="bg-surface-container-lowest rounded-2xl card-shadow overflow-hidden">
+                    <div class="p-5 border-b border-surface-variant flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-tertiary/10 flex items-center justify-center">
+                                <span class="material-symbols-outlined text-tertiary">table_view</span>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-[16px] text-on-surface">Data Preview</h3>
+                                <p class="text-[12px] text-on-surface-variant" id="previewSubtitle">Upload file untuk melihat preview data</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span id="rowCountBadge" class="hidden bg-primary/10 text-primary px-3 py-1 rounded-full text-[12px] font-semibold"></span>
+                            <span id="detectedFormatBadge" class="hidden"></span>
+                        </div>
+                    </div>
+                    <!-- Table -->
+                    <div class="overflow-x-auto" id="previewTableWrapper">
+                        <!-- Empty state -->
+                        <div id="previewEmpty" class="flex flex-col items-center justify-center py-20 text-on-surface-variant">
+                            <span class="material-symbols-outlined text-[48px] text-outline mb-3">upload_file</span>
+                            <p class="text-[14px] font-medium">Belum ada file yang dipilih</p>
+                            <p class="text-[12px] mt-1">Upload file Excel untuk melihat preview data di sini</p>
+                        </div>
+                        <table class="preview-table hidden" id="previewTable">
+                            <thead id="previewThead"></thead>
+                            <tbody id="previewTbody"></tbody>
+                        </table>
+                    </div>
+                    <div id="previewFooter" class="hidden p-4 border-t border-surface-variant bg-surface-container-low/30 flex items-center justify-between">
+                        <span class="text-[12px] text-on-surface-variant italic" id="previewFooterText">Data divalidasi secara otomatis berdasarkan format sistem.</span>
+                        <span class="text-[12px] text-on-surface-variant">Total baris data: <strong id="totalDataRows">0</strong></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- COLUMN MAPPER MODAL -->
+<div class="modal-overlay" id="columnMapperModal">
+    <div class="modal-box">
+        <div class="flex items-center gap-3 mb-5">
+            <div class="w-10 h-10 rounded-xl bg-orange-100 flex items-center justify-center">
+                <span class="material-symbols-outlined text-orange-500">tune</span>
+            </div>
+            <div>
+                <h2 class="text-[18px] font-bold text-on-surface">Column Mapper</h2>
+                <p class="text-[12px] text-on-surface-variant">Format tidak dikenal. Petakan kolom Excel ke field sistem.</p>
+            </div>
+        </div>
+        <div id="columnMapperFields" class="space-y-3 mb-5"></div>
+        <div class="flex justify-end gap-3">
+            <button onclick="document.getElementById('columnMapperModal').classList.remove('open')" class="px-4 py-2 border border-outline-variant rounded-lg text-[13px] text-on-surface hover:bg-surface-container transition-colors">Batal</button>
+            <button onclick="applyColumnMapping()" class="px-5 py-2 bg-primary text-white rounded-lg text-[13px] font-semibold hover:bg-[#004f57] transition-colors">Terapkan Mapping</button>
+        </div>
+    </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toastMsg"></div>
+
+<script>
+// ============================================================
+// GLOBAL STATE
+// ============================================================
+const LS_KEY = 'ptpn4_input_entries';
+const HISTORY_KEY = 'ptpn4_upload_history';
+
+let parsedData = [];        // Raw rows dari Excel
+let mappedEntries = [];     // Entries yang sudah dimap ke format sistem
+let detectedFormat = null;  // 'FES' | 'US' | 'UNKNOWN'
+let detectedHeaders = [];   // Header kolom dari Excel
+let allHeaders = [];        // Semua header untuk column mapper
+
+const BULAN_ID = ['','Januari','Februari','Maret','April','Mei','Juni',
+    'Juli','Agustus','September','Oktober','November','Desember'];
+
+const KATEGORI_RULES = [
+    {kw:'tiket pesawat', cat:'Pesawat'}, {kw:'pesawat', cat:'Pesawat'},
+    {kw:'hotel', cat:'Hotel'}, {kw:'penginapan', cat:'Hotel'},
+    {kw:'mess', cat:'Hotel'}, {kw:'kereta', cat:'Kereta'},
+    {kw:'mobil', cat:'Mobil'}, {kw:'rental', cat:'Mobil'},
+    {kw:'sewa kendaraan', cat:'Mobil'},
+    {kw:'per diem', cat:'Per Diem'}, {kw:'perdiem', cat:'Per Diem'}, {kw:'uang harian', cat:'Per Diem'},
+    {kw:'trans lokal', cat:'Trans Lokal'}, {kw:'transport lokal', cat:'Trans Lokal'},
+    {kw:'transport dari', cat:'Transport Dari & Ke'},
+    {kw:'laundry', cat:'Laundry'}
+];
+
+function detectKategori(uraian) {
+    if (!uraian) return 'Lain-lain';
+    const low = uraian.toLowerCase();
+    for (const r of KATEGORI_RULES) if (low.includes(r.kw)) return r.cat;
+    return 'Lain-lain';
+}
+
+function cleanNum(v) {
+    if (typeof v === 'number') return v;
+    if (!v) return 0;
+    return Number(String(v).replace(/[^0-9.-]/g, '')) || 0;
+}
+
+function fmtCur(n) {
+    if (!n && n !== 0) return '-';
+    return 'Rp ' + new Intl.NumberFormat('id-ID').format(n);
+}
+
+function fmtCurNum(n) {
+    return new Intl.NumberFormat('id-ID').format(n || 0);
+}
+
+// ============================================================
+// DRAG & DROP
+// ============================================================
+const dropZone = document.getElementById('dropZone');
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+dropZone.addEventListener('drop', e => {
+    e.preventDefault();
+    dropZone.classList.remove('drag-over');
+    const file = e.dataTransfer.files[0];
+    if (file) handleFileSelect(file);
+});
+
+// ============================================================
+// FILE HANDLING
+// ============================================================
+function handleFileSelect(file) {
+    if (!file) return;
+    const ext = file.name.split('.').pop().toLowerCase();
+    if (!['xlsx','xls'].includes(ext)) {
+        showToast('⚠️ Format file tidak didukung. Gunakan .xlsx atau .xls');
+        return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+        showToast('⚠️ Ukuran file melebihi 10MB');
+        return;
+    }
+
+    // Show file info
+    document.getElementById('fileInfoCard').classList.remove('hidden');
+    document.getElementById('fileName').textContent = file.name;
+    document.getElementById('fileSize').textContent = (file.size / 1024).toFixed(1) + ' KB';
+    document.getElementById('progressFill').style.width = '20%';
+    document.getElementById('progressText').textContent = 'Membaca file...';
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            document.getElementById('progressFill').style.width = '50%';
+            const data = new Uint8Array(e.target.result);
+            const wb = XLSX.read(data, {type:'uint8', cellDates: true, raw: false});
+            const ws = wb.Sheets[wb.SheetNames[0]];
+            const rows = XLSX.utils.sheet_to_json(ws, {header:1, defval:'', raw:false});
+
+            document.getElementById('progressFill').style.width = '80%';
+            parseRows(rows, file.name);
+            document.getElementById('progressFill').style.width = '100%';
+            document.getElementById('progressText').textContent = '✅ Selesai diproses';
+        } catch(err) {
+            document.getElementById('progressText').textContent = '❌ Gagal membaca file';
+            showToast('❌ Gagal membaca file: ' + err.message);
+        }
+    };
+    reader.readAsArrayBuffer(file);
+}
+
+function clearFile() {
+    document.getElementById('fileInput').value = '';
+    document.getElementById('fileInfoCard').classList.add('hidden');
+    document.getElementById('previewEmpty').classList.remove('hidden');
+    document.getElementById('previewTable').classList.add('hidden');
+    document.getElementById('previewFooter').classList.add('hidden');
+    document.getElementById('rowCountBadge').classList.add('hidden');
+    document.getElementById('detectedFormatBadge').classList.add('hidden');
+    document.getElementById('formatBadge').classList.add('hidden');
+    document.getElementById('btnProses').disabled = true;
+    document.getElementById('previewSubtitle').textContent = 'Upload file untuk melihat preview data';
+    parsedData = [];
+    mappedEntries = [];
+    detectedFormat = null;
+}
+
+// ============================================================
+// ROW PARSING & FORMAT DETECTION
+// ============================================================
+function findHeaderRow(rows) {
+    // Cari baris yang punya keyword kolom utama
+    const keywords = ['divisi', 'tagihan', 'sap', 'cost center', 'yang dibayarkan', 'service fee'];
+    for (let i = 0; i < Math.min(15, rows.length); i++) {
+        const cells = rows[i].map(c => String(c).toLowerCase());
+        const matches = keywords.filter(kw => cells.some(c => c.includes(kw)));
+        if (matches.length >= 3) return i;
+    }
+    return 0;
+}
+
+function detectFormat(headers) {
+    const hlow = headers.map(h => String(h).toLowerCase().trim());
+    // US format: punya 'dpp service fee' atau 'ppn 12%'
+    if (hlow.some(h => h.includes('dpp service') || h.includes('ppn 12'))) return 'US';
+    // FES format: tidak punya DPP, punya 'no mpp' sebagai kolom tersendiri dan 'jumlah tagihan' langsung
+    if (hlow.some(h => h.includes('no mpp') || h.includes('no. mpp')) && !hlow.some(h => h.includes('dpp'))) return 'FES';
+    return 'UNKNOWN';
+}
+
+function findColIdx(headers, candidates) {
+    const hlow = headers.map(h => String(h).toLowerCase().trim());
+    for (const c of candidates) {
+        const idx = hlow.findIndex(h => h.includes(c.toLowerCase()));
+        if (idx >= 0) return idx;
+    }
+    return -1;
+}
+
+function parseRows(rows, fileName) {
+    const headerRowIdx = findHeaderRow(rows);
+    const headerRow = rows[headerRowIdx];
+    allHeaders = headerRow.map(h => String(h).trim()).filter(h => h);
+    detectedFormat = detectFormat(headerRow);
+
+    // Show format badge
+    const badgeEl = document.getElementById('detectedFormatBadge');
+    const topBadge = document.getElementById('formatBadge');
+    badgeEl.classList.remove('hidden');
+    topBadge.classList.remove('hidden');
+    if (detectedFormat === 'FES') {
+        badgeEl.innerHTML = '<span class="badge-fes">📄 Format FES Terdeteksi</span>';
+        topBadge.innerHTML = '<span class="badge-fes">📄 FES</span>';
+    } else if (detectedFormat === 'US') {
+        badgeEl.innerHTML = '<span class="badge-us">📊 Format US Terdeteksi</span>';
+        topBadge.innerHTML = '<span class="badge-us">📊 US</span>';
+    } else {
+        badgeEl.innerHTML = '<span class="badge-unknown">🔧 Format Tidak Dikenal</span>';
+        topBadge.innerHTML = '<span class="badge-unknown">🔧 Kustom</span>';
+    }
+
+    const dataRows = rows.slice(headerRowIdx + 1);
+    parsedData = dataRows;
+    detectedHeaders = headerRow;
+
+    if (detectedFormat === 'UNKNOWN') {
+        // Tampilkan column mapper
+        showColumnMapper(headerRow);
+        return;
+    }
+
+    // Parse sesuai format
+    if (detectedFormat === 'FES') mappedEntries = parseFES(headerRow, dataRows);
+    else if (detectedFormat === 'US') mappedEntries = parseUS(headerRow, dataRows);
+
+    renderPreview(fileName);
+}
+
+// ============================================================
+// FES PARSER
+// ============================================================
+function parseFES(headers, dataRows) {
+    const hi = idx => findColIdx(headers, idx);
+    const iNoMpp  = hi(['no mpp', 'no. mpp']);
+    const iNo     = hi(['no']);
+    const iSap    = hi(['sap']);
+    const iCc     = hi(['cost center']);
+    const iDiv    = hi(['divisi']);
+    const iTag    = hi(['tagihan']);
+    const iSf     = hi(['service fee']);
+    const iJml    = hi(['jumlah tagihan']);
+    const iPph    = hi(['pph23', 'pph 23']);
+    const iYd     = hi(['yang dibayarkan']);
+    const iUr     = hi(['uraian']);
+
+    const entries = [];
+    let currentDivisi = '';
+
+    for (const row of dataRows) {
+        if (!row || row.every(c => !c)) continue;
+        const divCell = iDiv >= 0 ? String(row[iDiv] || '').trim() : '';
+        const tagCell = iTag >= 0 ? row[iTag] : '';
+
+        // Skip baris subtotal & total (hanya berisi nama divisi atau TOTAL KESELURUHAN)
+        if (divCell && !tagCell && !String(row[iNo] || '').trim()) {
+            currentDivisi = divCell;
+            continue;
+        }
+        const totalText = row.join(' ').toLowerCase();
+        if (totalText.includes('total keseluruhan') || totalText.includes('total divisi')) continue;
+
+        const tagihan = cleanNum(tagCell);
+        if (!tagihan && !divCell) continue;
+
+        const divisi = divCell || currentDivisi;
+        if (!divisi) continue;
+
+        const sf = cleanNum(iSf >= 0 ? row[iSf] : 0);
+        const jml = cleanNum(iJml >= 0 ? row[iJml] : 0) || (tagihan + sf);
+        const pph23 = cleanNum(iPph >= 0 ? row[iPph] : 0);
+        const yd = cleanNum(iYd >= 0 ? row[iYd] : 0) || (jml - pph23);
+        const uraian = String(iUr >= 0 ? row[iUr] || '' : '');
+        const sap = String(iSap >= 0 ? row[iSap] || '' : '');
+        const cc = String(iCc >= 0 ? row[iCc] || '' : '');
+        const noMpp = String(iNoMpp >= 0 ? row[iNoMpp] || '' : '');
+
+        entries.push({
+            tahun_anggaran: '2026',
+            cost_center: cc,
+            kode_sap: sap,
+            divisi: divisi,
+            vendor: 'FES',
+            kategori: detectKategori(uraian),
+            no_invoice: '', no_mpp: noMpp,
+            period: '', tgl_berangkat: '', tgl_kembali: '',
+            uraian: uraian, uraian_html: '',
+            tagihan: tagihan, service_fee: sf,
+            jumlah_qty: 1, dpp_service_fee: 0, ppn: 0,
+            pph23: pph23,
+            tagihan_service: sf - pph23,
+            jumlah_tagihan: jml,
+            yang_dibayarkan: yd,
+            source: 'upload'
+        });
+        currentDivisi = divisi;
+    }
+    return entries;
+}
+
+// ============================================================
+// US PARSER
+// ============================================================
+function parseUS(headers, dataRows) {
+    const hi = idx => findColIdx(headers, idx);
+    const iNo     = hi(['no']);
+    const iSap    = hi(['sap']);
+    const iNoMpp  = hi(['no. mpp', 'no mpp']);
+    const iCc     = hi(['cost center']);
+    const iDiv    = hi(['divisi']);
+    const iTag    = hi(['tagihan']);
+    const iSf     = hi(['service fee']);
+    const iDpp    = hi(['dpp service']);
+    const iPpn    = hi(['ppn 12', 'ppn12', 'ppn']);
+    const iPph    = hi(['pph23', 'pph 23']);
+    const iTs     = hi(['tagihan service']);
+    const iJml    = hi(['jumlah tagihan']);
+    const iYd     = hi(['yang dibayarkan']);
+    const iUr     = hi(['uraian']);
+
+    const entries = [];
+    for (const row of dataRows) {
+        if (!row || row.every(c => !c)) continue;
+        const totalText = row.join(' ').toLowerCase();
+        if (totalText.includes('total') || !row[iTag]) continue;
+
+        const tagihan = cleanNum(row[iTag]);
+        if (!tagihan) continue;
+
+        const sf = cleanNum(iSf >= 0 ? row[iSf] : 0);
+        const dpp = cleanNum(iDpp >= 0 ? row[iDpp] : 0);
+        const ppn = cleanNum(iPpn >= 0 ? row[iPpn] : 0);
+        const pph23 = cleanNum(iPph >= 0 ? row[iPph] : 0);
+        const ts = cleanNum(iTs >= 0 ? row[iTs] : 0);
+        const jml = cleanNum(iJml >= 0 ? row[iJml] : 0) || (tagihan + sf + ppn);
+        const yd = cleanNum(iYd >= 0 ? row[iYd] : 0) || (jml - pph23);
+        const uraian = String(iUr >= 0 ? row[iUr] || '' : '');
+        const sap = String(iSap >= 0 ? row[iSap] || '' : '');
+        const cc = String(iCc >= 0 ? row[iCc] || '' : '');
+        const div = String(iDiv >= 0 ? row[iDiv] || '' : '');
+        const noMpp = String(iNoMpp >= 0 ? row[iNoMpp] || '' : '');
+
+        if (!div) continue;
+
+        entries.push({
+            tahun_anggaran: '2026',
+            cost_center: cc,
+            kode_sap: sap,
+            divisi: div,
+            vendor: 'US',
+            kategori: detectKategori(uraian),
+            no_invoice: '', no_mpp: noMpp,
+            period: '', tgl_berangkat: '', tgl_kembali: '',
+            uraian: uraian, uraian_html: '',
+            tagihan: tagihan, service_fee: sf,
+            jumlah_qty: 1, dpp_service_fee: dpp, ppn: ppn,
+            pph23: pph23, tagihan_service: ts,
+            jumlah_tagihan: jml,
+            yang_dibayarkan: yd,
+            source: 'upload'
+        });
+    }
+    return entries;
+}
+
+// ============================================================
+// COLUMN MAPPER (for unknown formats)
+// ============================================================
+const SYSTEM_FIELDS = [
+    {key:'divisi', label:'Divisi', required:true},
+    {key:'tagihan', label:'Tagihan', required:true},
+    {key:'service_fee', label:'Service Fee', required:false},
+    {key:'yang_dibayarkan', label:'Yang Dibayarkan', required:false},
+    {key:'jumlah_tagihan', label:'Jumlah Tagihan', required:false},
+    {key:'pph23', label:'PPH 23', required:false},
+    {key:'kode_sap', label:'Kode SAP / GL', required:false},
+    {key:'cost_center', label:'Cost Center', required:false},
+    {key:'no_mpp', label:'No. MPP', required:false},
+    {key:'uraian', label:'Uraian', required:false},
+];
+
+let columnMapping = {};
+
+function showColumnMapper(headers) {
+    const container = document.getElementById('columnMapperFields');
+    container.innerHTML = SYSTEM_FIELDS.map(f => `
+        <div class="flex items-center gap-3">
+            <label class="w-40 text-[13px] font-medium text-on-surface flex-shrink-0">
+                ${f.label}${f.required ? ' <span class="text-error">*</span>' : ''}
+            </label>
+            <select class="select-field" id="map_${f.key}">
+                <option value="">— Tidak dimap —</option>
+                ${headers.map((h,i) => `<option value="${i}" ${autoMatch(h,f.key) ? 'selected' : ''}>${h}</option>`).join('')}
+            </select>
+        </div>
+    `).join('');
+    document.getElementById('columnMapperModal').classList.add('open');
+}
+
+function autoMatch(header, key) {
+    const h = header.toLowerCase();
+    const maps = {
+        divisi: ['divisi'], tagihan: ['tagihan'],
+        service_fee: ['service fee'], yang_dibayarkan: ['yang dibayarkan'],
+        jumlah_tagihan: ['jumlah tagihan'], pph23: ['pph'],
+        kode_sap: ['sap'], cost_center: ['cost center'],
+        no_mpp: ['no mpp', 'no. mpp'], uraian: ['uraian']
+    };
+    return (maps[key] || []).some(k => h.includes(k));
+}
+
+function applyColumnMapping() {
+    columnMapping = {};
+    SYSTEM_FIELDS.forEach(f => {
+        const sel = document.getElementById(`map_${f.key}`);
+        if (sel && sel.value !== '') columnMapping[f.key] = parseInt(sel.value);
+    });
+    if (!columnMapping.divisi || !columnMapping.tagihan) {
+        showToast('⚠️ Field Divisi dan Tagihan wajib dipetakan!');
+        return;
+    }
+    document.getElementById('columnMapperModal').classList.remove('open');
+    mappedEntries = parseCustom(detectedHeaders, parsedData, columnMapping);
+    renderPreview(document.getElementById('fileName').textContent);
+    detectedFormat = 'CUSTOM';
+}
+
+function parseCustom(headers, dataRows, mapping) {
+    const entries = [];
+    for (const row of dataRows) {
+        if (!row || row.every(c => !c)) continue;
+        const get = key => mapping[key] !== undefined ? row[mapping[key]] : '';
+        const tagihan = cleanNum(get('tagihan'));
+        const div = String(get('divisi') || '').trim();
+        if (!tagihan || !div) continue;
+        const sf = cleanNum(get('service_fee'));
+        const yd = cleanNum(get('yang_dibayarkan'));
+        const jml = cleanNum(get('jumlah_tagihan')) || tagihan + sf;
+        const pph23 = cleanNum(get('pph23'));
+        const uraian = String(get('uraian') || '');
+        entries.push({
+            tahun_anggaran: '2026',
+            cost_center: String(get('cost_center') || ''),
+            kode_sap: String(get('kode_sap') || ''),
+            divisi: div, vendor: 'Lainnya',
+            kategori: detectKategori(uraian),
+            no_invoice: '', no_mpp: String(get('no_mpp') || ''),
+            period: '', tgl_berangkat: '', tgl_kembali: '',
+            uraian: uraian, uraian_html: '',
+            tagihan: tagihan, service_fee: sf, jumlah_qty: 1,
+            dpp_service_fee: 0, ppn: 0, pph23: pph23, tagihan_service: 0,
+            jumlah_tagihan: jml, yang_dibayarkan: yd || jml - pph23,
+            source: 'upload'
+        });
+    }
+    return entries;
+}
+
+// ============================================================
+// RENDER PREVIEW TABLE (with subtotals per divisi)
+// ============================================================
+function renderPreview(fileName) {
+    if (!mappedEntries || mappedEntries.length === 0) {
+        showToast('⚠️ Tidak ada data yang bisa diparsing dari file ini');
+        return;
+    }
+
+    document.getElementById('previewEmpty').classList.add('hidden');
+    document.getElementById('previewTable').classList.remove('hidden');
+    document.getElementById('previewFooter').classList.remove('hidden');
+    document.getElementById('previewSubtitle').textContent = `Preview: ${fileName}`;
+    document.getElementById('fileRows').textContent = `${mappedEntries.length} baris data terdeteksi`;
+
+    const isUS = detectedFormat === 'US';
+
+    // Build headers
+    const thead = document.getElementById('previewThead');
+    thead.innerHTML = `<tr>
+        <th style="text-align:left">No</th>
+        <th style="text-align:left">Divisi</th>
+        <th style="text-align:left">SAP/GL</th>
+        <th style="text-align:left">Kategori</th>
+        <th>Tagihan</th>
+        <th>Service Fee</th>
+        ${isUS ? '<th>DPP SF</th><th>PPN 12%</th>' : ''}
+        <th>PPH 23</th>
+        <th>Jumlah Tagihan</th>
+        <th>Yang Dibayarkan</th>
+        <th style="text-align:left;max-width:200px">Uraian</th>
+    </tr>`;
+
+    // Group by divisi
+    const groups = {};
+    mappedEntries.forEach((e, i) => {
+        if (!groups[e.divisi]) groups[e.divisi] = [];
+        groups[e.divisi].push({...e, _idx: i});
+    });
+
+    let rowNum = 1;
+    let gtTag = 0, gtSf = 0, gtPph = 0, gtJml = 0, gtYd = 0, gtDpp = 0, gtPpn = 0;
+    const tbody = document.getElementById('previewTbody');
+    tbody.innerHTML = '';
+
+    Object.entries(groups).forEach(([div, items]) => {
+        let stTag = 0, stSf = 0, stPph = 0, stJml = 0, stYd = 0, stDpp = 0, stPpn = 0;
+        items.forEach(e => {
+            stTag += e.tagihan; stSf += e.service_fee; stPph += e.pph23;
+            stJml += e.jumlah_tagihan; stYd += e.yang_dibayarkan;
+            stDpp += e.dpp_service_fee || 0; stPpn += e.ppn || 0;
+
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td style="text-align:left;font-family:Inter">${rowNum++}</td>
+                <td style="text-align:left;font-family:Inter;font-weight:600">${e.divisi}</td>
+                <td style="text-align:left;font-family:'JetBrains Mono',monospace;font-size:11px">${e.kode_sap}</td>
+                <td style="text-align:left;font-family:Inter">${getCatIcon(e.kategori)} ${e.kategori}</td>
+                <td>${fmtCurNum(e.tagihan)}</td>
+                <td>${fmtCurNum(e.service_fee)}</td>
+                ${isUS ? `<td>${fmtCurNum(e.dpp_service_fee)}</td><td>${fmtCurNum(e.ppn)}</td>` : ''}
+                <td>${fmtCurNum(e.pph23)}</td>
+                <td style="font-weight:600">${fmtCurNum(e.jumlah_tagihan)}</td>
+                <td style="color:#006670;font-weight:600">${fmtCurNum(e.yang_dibayarkan)}</td>
+                <td style="text-align:left;font-family:Inter;font-size:11px;max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${e.uraian}">${e.uraian}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+
+        // Subtotal row
+        const stRow = document.createElement('tr');
+        stRow.className = 'subtotal-row';
+        stRow.innerHTML = `
+            <td style="text-align:left" colspan="4">Total ${div}</td>
+            <td>${fmtCurNum(stTag)}</td>
+            <td>${fmtCurNum(stSf)}</td>
+            ${isUS ? `<td>${fmtCurNum(stDpp)}</td><td>${fmtCurNum(stPpn)}</td>` : ''}
+            <td>${fmtCurNum(stPph)}</td>
+            <td>${fmtCurNum(stJml)}</td>
+            <td>${fmtCurNum(stYd)}</td>
+            <td></td>
+        `;
+        tbody.appendChild(stRow);
+
+        // Spacer
+        const spacer = document.createElement('tr');
+        spacer.innerHTML = `<td colspan="${isUS ? 12 : 10}" style="height:8px;background:#f6fafb;border:none"></td>`;
+        tbody.appendChild(spacer);
+
+        gtTag += stTag; gtSf += stSf; gtPph += stPph; gtJml += stJml; gtYd += stYd;
+        gtDpp += stDpp; gtPpn += stPpn;
+    });
+
+    // Grand Total
+    const gtRow = document.createElement('tr');
+    gtRow.className = 'grandtotal-row';
+    gtRow.innerHTML = `
+        <td style="text-align:left" colspan="4">🏆 TOTAL KESELURUHAN</td>
+        <td>${fmtCurNum(gtTag)}</td>
+        <td>${fmtCurNum(gtSf)}</td>
+        ${isUS ? `<td>${fmtCurNum(gtDpp)}</td><td>${fmtCurNum(gtPpn)}</td>` : ''}
+        <td>${fmtCurNum(gtPph)}</td>
+        <td>${fmtCurNum(gtJml)}</td>
+        <td>${fmtCurNum(gtYd)}</td>
+        <td></td>
+    `;
+    tbody.appendChild(gtRow);
+
+    document.getElementById('rowCountBadge').classList.remove('hidden');
+    document.getElementById('rowCountBadge').textContent = `${mappedEntries.length} baris data`;
+    document.getElementById('totalDataRows').textContent = mappedEntries.length;
+    document.getElementById('btnProses').disabled = false;
+}
+
+function getCatIcon(cat) {
+    const m = {'Pesawat':'✈️','Hotel':'🏨','Kereta':'🚆','Mobil':'🚗','Per Diem':'💰',
+                'Trans Lokal':'🚕','Transport Dari & Ke':'🚐','Laundry':'👔','Lain-lain':'📦'};
+    return m[cat] || '📦';
+}
+
+// ============================================================
+// PROCESS UPLOAD — Save to localStorage
+// ============================================================
+function processUpload() {
+    if (!mappedEntries || mappedEntries.length === 0) {
+        showToast('⚠️ Tidak ada data untuk diproses');
+        return;
+    }
+
+    // Ambil data yang sudah ada
+    let existing = [];
+    try {
+        const saved = localStorage.getItem('ptpn4_input_entries');
+        if (saved) existing = JSON.parse(saved);
+    } catch(e) {}
+
+    // Merge (tambahkan, bukan replace)
+    const merged = [...existing, ...mappedEntries];
+    localStorage.setItem('ptpn4_input_entries', JSON.stringify(merged));
+
+    // Simpan ke history
+    const fileName = document.getElementById('fileName').textContent;
+    const history = getHistory();
+    history.unshift({
+        name: fileName,
+        format: detectedFormat,
+        rows: mappedEntries.length,
+        date: new Date().toLocaleString('id-ID', {day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}),
+        status: 'success'
+    });
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(history.slice(0, 20)));
+    renderHistory();
+
+    showToast(`✅ ${mappedEntries.length} entri berhasil ditambahkan ke database!`);
+    document.getElementById('btnProses').disabled = true;
+
+    // Auto-redirect to input.html after 2s
+    setTimeout(() => { window.location.href = 'input.html'; }, 2500);
+}
+
+// ============================================================
+// HISTORY
+// ============================================================
+function getHistory() {
+    try {
+        return JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
+    } catch(e) { return []; }
+}
+
+function renderHistory() {
+    const history = getHistory();
+    const list = document.getElementById('historyList');
+    const empty = document.getElementById('historyEmpty');
+    if (!history.length) {
+        list.innerHTML = '';
+        empty.classList.remove('hidden');
+        return;
+    }
+    empty.classList.add('hidden');
+    list.innerHTML = history.map(h => `
+        <div class="flex items-center justify-between p-3 rounded-xl hover:bg-surface-container-low transition-colors">
+            <div class="flex items-center gap-2 min-w-0">
+                <span class="material-symbols-outlined text-outline text-[20px] flex-shrink-0">description</span>
+                <div class="min-w-0">
+                    <p class="font-medium text-[13px] text-on-surface truncate">${h.name}</p>
+                    <p class="text-[11px] text-on-surface-variant">${h.date} · ${h.rows} baris · ${h.format}</p>
+                </div>
+            </div>
+            <span class="badge-${h.status} flex-shrink-0 ml-2">${h.status === 'success' ? 'Sukses' : 'Gagal'}</span>
+        </div>
+    `).join('');
+}
+
+function clearHistory() {
+    if (!confirm('Hapus semua history upload?')) return;
+    localStorage.removeItem(HISTORY_KEY);
+    renderHistory();
+}
+
+// ============================================================
+// TOAST
+// ============================================================
+function showToast(msg, duration=3000) {
+    const t = document.getElementById('toastMsg');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), duration);
+}
+
+// INIT
+renderHistory();
+</script>
+</body>
+</html>

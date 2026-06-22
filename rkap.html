@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RKAP Perjalanan Dinas - PTPN IV</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<script id="tailwind-config">
+tailwind.config = {
+    darkMode: 'class',
+    theme: {
+        extend: {
+            colors: {
+                'primary': '#006670', 'on-primary': '#ffffff', 'primary-container': '#00818e',
+                'secondary': '#536600', 'secondary-container': '#d2ef69',
+                'tertiary': '#15656e', 'error': '#ba1a1a', 'error-container': '#ffdad6',
+                'surface': '#f6fafb', 'surface-variant': '#dfe3e4',
+                'surface-container-lowest': '#ffffff', 'surface-container-low': '#f0f4f5',
+                'surface-container': '#eaefef', 'surface-container-high': '#e4e9ea',
+                'on-surface': '#171c1d', 'on-surface-variant': '#3d494b',
+                'outline': '#6d797b', 'outline-variant': '#bdc9cb', 'background': '#f6fafb',
+                'secondary-fixed': '#d2ef69', 'secondary-fixed-dim': '#b6d250'
+            },
+            fontFamily: { 'label-sm': ['Inter'], 'headline-md': ['Inter'], 'financial-sm': ['JetBrains Mono'], 'body-base': ['Inter'] }
+        }
+    }
+}
+</script>
+<style>
+body { font-family: 'Inter', sans-serif; }
+.card-shadow { box-shadow: 0 2px 12px rgba(12,97,106,0.08); }
+.nav-link { transition: all 0.2s; border-left: 4px solid transparent; }
+.nav-link:hover { color: white !important; background: rgba(13,148,136,0.2); }
+.nav-link.active { color: #b6d250 !important; border-left-color: #b6d250; background: rgba(13,148,136,0.2); }
+.form-label { font-size: 13px; font-weight: 600; color: #3d494b; margin-bottom: 5px; display: block; }
+.form-input { width: 100%; border: 1.5px solid #bdc9cb; border-radius: 10px; padding: 10px 14px; font-size: 13px; outline: none; background: white; transition: border 0.2s, box-shadow 0.2s; }
+.form-input:focus { border-color: #006670; box-shadow: 0 0 0 3px rgba(0,102,112,0.12); }
+.form-select { width: 100%; border: 1.5px solid #bdc9cb; border-radius: 10px; padding: 10px 14px; font-size: 13px; outline: none; background: white; transition: border 0.2s; cursor: pointer; }
+.form-select:focus { border-color: #006670; box-shadow: 0 0 0 3px rgba(0,102,112,0.12); }
+.btn-primary { background: #006670; color: white; padding: 10px 20px; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; transition: background 0.2s; border: none; display: inline-flex; align-items: center; gap: 6px; }
+.btn-primary:hover { background: #004f57; }
+.btn-secondary { background: #f0f4f5; color: #3d494b; padding: 10px 20px; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; transition: background 0.2s; border: 1.5px solid #bdc9cb; display: inline-flex; align-items: center; gap: 6px; }
+.btn-secondary:hover { background: #e4e9ea; }
+.btn-danger { background: #ffdad6; color: #93000a; padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; border: none; transition: background 0.2s; }
+.btn-danger:hover { background: #ffb4ab; }
+.btn-edit { background: #d2ef69; color: #3e4c00; padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; border: none; transition: background 0.2s; }
+.btn-edit:hover { background: #b6d250; }
+/* RKAP Table */
+.rkap-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.rkap-table th { padding: 10px 14px; background: #f0f4f5; color: #3d494b; font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 2px solid #bdc9cb; }
+.rkap-table th:not(:first-child) { text-align: right; }
+.rkap-table td { padding: 9px 14px; border-bottom: 1px solid #eaefef; font-family: 'JetBrains Mono', monospace; text-align: right; }
+.rkap-table td:first-child, .rkap-table td:nth-child(2), .rkap-table td:nth-child(3) { font-family: 'Inter', sans-serif; text-align: left; }
+.rkap-table tr:hover { background: #f6fafb; }
+.divisi-header-row { background: linear-gradient(135deg, #006670, #15656e) !important; }
+.divisi-header-row td { color: white !important; font-family: 'Inter', sans-serif !important; font-weight: 700 !important; text-align: left !important; }
+.subtotal-row { background: #f0f4f5; }
+.subtotal-row td { color: #006670; font-weight: 700; border-top: 2px solid #bdc9cb; border-bottom: 2px solid #bdc9cb; }
+.grandtotal-row { background: #006670; }
+.grandtotal-row td { color: white !important; font-weight: 700; border: none; }
+.grandtotal-row td:first-child { font-family: 'Inter', sans-serif !important; }
+.revisi-badge { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 20px; }
+.badge-plus { background: #d2ef69; color: #3e4c00; }
+.badge-minus { background: #ffdad6; color: #93000a; }
+/* Progress bar */
+.pagu-bar { height: 6px; border-radius: 3px; background: #dfe3e4; overflow: hidden; margin-top: 4px; }
+.pagu-fill { height: 100%; border-radius: 3px; transition: width 0.3s; }
+/* Toast */
+.toast { position: fixed; bottom: 24px; right: 24px; background: #006670; color: white; padding: 12px 20px; border-radius: 10px; font-size: 13px; z-index: 9999; transform: translateY(80px); opacity: 0; transition: all 0.3s; }
+.toast.show { transform: translateY(0); opacity: 1; }
+/* Tab */
+.tab-btn { padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; border: none; background: transparent; color: #6d797b; }
+.tab-btn.active { background: #006670; color: white; }
+/* Modal */
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 1000; align-items: center; justify-content: center; }
+.modal-overlay.open { display: flex; }
+.modal-box { background: white; border-radius: 16px; padding: 28px; max-width: 560px; width: 95%; max-height: 85vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
+</style>
+</head>
+<body class="bg-background text-on-surface antialiased flex">
+
+<!-- SIDEBAR -->
+<nav class="bg-[#0c616a] fixed h-screen w-[260px] left-0 top-0 border-r border-teal-900/20 shadow-xl flex flex-col pt-6 pb-4 z-50">
+    <div class="px-6 mb-8 pt-6">
+        <h1 class="text-[20px] font-black tracking-tight text-white leading-tight uppercase">PTPN IV</h1>
+        <p class="text-[12px] tracking-wide text-teal-200/70 mt-1">Agro-Corporate Portal</p>
+    </div>
+    <div class="flex flex-col gap-1 flex-1 text-sm tracking-wide">
+        <a class="nav-link flex items-center gap-4 px-6 py-4 text-white/70" href="index.html">
+            <span class="material-symbols-outlined">dashboard</span><span>Dashboard</span>
+        </a>
+        <a class="nav-link flex items-center gap-4 px-6 py-4 text-white/70" href="input.html">
+            <span class="material-symbols-outlined">edit_note</span><span>Input Data</span>
+        </a>
+        <a class="nav-link flex items-center gap-4 px-6 py-4 text-white/70" href="upload.html">
+            <span class="material-symbols-outlined">cloud_upload</span><span>Upload Data</span>
+        </a>
+        <a class="nav-link flex items-center gap-4 px-6 py-4 text-white/70" href="laporan.html">
+            <span class="material-symbols-outlined">description</span><span>Laporan</span>
+        </a>
+        <a class="nav-link active flex items-center gap-4 px-6 py-4" href="rkap.html">
+            <span class="material-symbols-outlined">account_balance_wallet</span><span>RKAP</span>
+        </a>
+        <a class="nav-link flex items-center gap-4 px-6 py-4 text-white/70" href="pengaturan.html">
+            <span class="material-symbols-outlined">settings</span><span>Pengaturan</span>
+        </a>
+    </div>
+    <div class="mt-auto p-6 border-t border-teal-900/50">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-teal-700 text-white font-bold text-sm flex items-center justify-center">BS</div>
+            <div><span class="text-white font-bold text-[14px] block">Budi Santoso</span><span class="text-teal-200/70 text-[11px]">Finance Director</span></div>
+        </div>
+    </div>
+</nav>
+
+<!-- TOPBAR -->
+<header class="fixed top-0 left-[260px] right-0 h-16 bg-white border-b border-slate-100 shadow-[0_2px_12px_rgba(12,97,106,0.08)] flex items-center justify-between px-8 z-40">
+    <div class="flex items-center gap-3">
+        <span class="text-lg font-bold text-[#0c616a]">RKAP Perjalanan Dinas</span>
+        <span class="bg-secondary-container/60 text-secondary px-3 py-1 rounded-full text-[11px] font-bold" id="tahunLabel">2026</span>
+    </div>
+    <div class="flex items-center gap-3">
+        <select id="tahunSelect" onchange="document.getElementById('tahunLabel').textContent=this.value;renderAll()" class="border border-outline-variant rounded-lg px-3 py-1.5 text-sm outline-none">
+            <option>2025</option><option selected>2026</option><option>2027</option>
+        </select>
+        <button onclick="openModal('add')" class="btn-primary text-[13px]">
+            <span class="material-symbols-outlined text-[18px]">add</span>Tambah RKAP
+        </button>
+        <div class="w-8 h-8 rounded-full bg-teal-700 text-white text-xs font-bold flex items-center justify-center">BS</div>
+    </div>
+</header>
+
+<!-- MAIN -->
+<main class="ml-[260px] pt-20 px-6 pb-12 flex-1">
+    <div class="max-w-[1400px] mx-auto">
+
+        <!-- Page Title -->
+        <div class="mb-6">
+            <h1 class="text-[28px] font-bold text-on-surface">RKAP Perjalanan Dinas</h1>
+            <p class="text-on-surface-variant text-sm mt-1">Rencana Kerja dan Anggaran Perusahaan — Manajemen pagu anggaran per Divisi dan Nomor GL. Mendukung revisi/pemindahan anggaran antar divisi.</p>
+        </div>
+
+        <!-- Explanation Card -->
+        <div class="bg-blue-50 border border-blue-200 rounded-2xl p-5 mb-6 flex gap-4">
+            <span class="material-symbols-outlined text-blue-500 text-[28px] flex-shrink-0">info</span>
+            <div>
+                <p class="font-semibold text-blue-900 text-[14px] mb-1">Tentang RKAP & Restrukturisasi Divisi</p>
+                <p class="text-blue-800 text-[13px] leading-relaxed">RKAP diikat pada <strong>Cost Center Code + Nomor GL</strong> (bukan nama divisi). Jika terjadi pemindahan sub-divisi (misal: Sub-divisi Umum dari DHPU pindah ke DPEN), gunakan fitur <strong>Revisi RKAP</strong> untuk mencatat pengurangan di DHPU dan penambahan di DPEN, lengkap dengan tanggal efektif dan alasan. Riwayat revisi tersimpan permanen untuk keperluan audit.</p>
+            </div>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6" id="summaryCards">
+            <!-- Diisi JS -->
+        </div>
+
+        <!-- Tabs -->
+        <div class="flex gap-2 mb-5 bg-surface-container-lowest rounded-xl p-1.5 w-fit card-shadow">
+            <button class="tab-btn active" id="tab-rkap" onclick="switchTab('rkap')">
+                📊 Tabel RKAP
+            </button>
+            <button class="tab-btn" id="tab-revisi" onclick="switchTab('revisi')">
+                🔄 Riwayat Revisi
+            </button>
+        </div>
+
+        <!-- RKAP TABLE TAB -->
+        <div id="view-rkap" class="bg-surface-container-lowest rounded-2xl card-shadow overflow-hidden">
+            <div class="p-5 border-b border-surface-variant flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-primary">account_balance_wallet</span>
+                    </div>
+                    <div>
+                        <h2 class="font-semibold text-[16px] text-on-surface">Anggaran RKAP per Divisi & GL</h2>
+                        <p class="text-[12px] text-on-surface-variant" id="rkapSubtitle">Loading...</p>
+                    </div>
+                </div>
+                <div class="flex gap-2">
+                    <input type="text" id="searchDivisi" placeholder="🔍 Cari divisi..." oninput="renderAll()" class="border border-outline-variant rounded-lg px-3 py-1.5 text-sm outline-none focus:border-primary w-48">
+                </div>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="rkap-table" id="rkapTable">
+                    <thead>
+                        <tr>
+                            <th style="text-align:left;width:120px">Divisi</th>
+                            <th style="text-align:left;width:130px">Cost Center</th>
+                            <th style="text-align:left;width:260px">Nomor GL & Deskripsi</th>
+                            <th>Pagu RKAP</th>
+                            <th>Revisi (+/-)</th>
+                            <th>Pagu Efektif</th>
+                            <th>Realisasi</th>
+                            <th>Sisa Anggaran</th>
+                            <th style="text-align:left;width:120px">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="rkapTableBody">
+                        <tr><td colspan="9" style="text-align:center;padding:40px;color:#6d797b">Belum ada data RKAP. Klik "Tambah RKAP" untuk mulai.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="p-4 border-t border-surface-variant bg-surface-container-low/30 flex items-center justify-between">
+                <span class="text-[12px] text-on-surface-variant" id="rkapFooter"></span>
+                <button onclick="exportRKAP()" class="btn-secondary text-[12px] py-2 px-4">
+                    <span class="material-symbols-outlined text-[16px]">download</span>Export
+                </button>
+            </div>
+        </div>
+
+        <!-- REVISI TAB -->
+        <div id="view-revisi" class="hidden bg-surface-container-lowest rounded-2xl card-shadow overflow-hidden">
+            <div class="p-5 border-b border-surface-variant flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-orange-100 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-orange-500">history</span>
+                    </div>
+                    <div>
+                        <h2 class="font-semibold text-[16px] text-on-surface">Riwayat Revisi RKAP</h2>
+                        <p class="text-[12px] text-on-surface-variant">Pemindahan anggaran antar divisi, penambahan, atau pengurangan</p>
+                    </div>
+                </div>
+                <button onclick="openRevisiModal()" class="btn-primary text-[13px]">
+                    <span class="material-symbols-outlined text-[18px]">swap_horiz</span>Tambah Revisi
+                </button>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="rkap-table" id="revisiTable">
+                    <thead>
+                        <tr>
+                            <th style="text-align:left">Tanggal Efektif</th>
+                            <th style="text-align:left">Divisi</th>
+                            <th style="text-align:left">GL</th>
+                            <th>Tipe</th>
+                            <th>Nominal Revisi</th>
+                            <th style="text-align:left">Alasan</th>
+                            <th style="text-align:left">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="revisiTableBody">
+                        <tr><td colspan="7" style="text-align:center;padding:40px;color:#6d797b">Belum ada riwayat revisi.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- MODAL: TAMBAH/EDIT RKAP -->
+<div class="modal-overlay" id="rkapModal">
+    <div class="modal-box">
+        <div class="flex items-center gap-3 mb-6">
+            <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                <span class="material-symbols-outlined text-primary">account_balance_wallet</span>
+            </div>
+            <h2 class="text-[18px] font-bold text-on-surface" id="modalTitle">Tambah RKAP</h2>
+        </div>
+        <div class="space-y-4">
+            <input type="hidden" id="editRkapId">
+            <div>
+                <label class="form-label">Divisi <span class="text-error">*</span></label>
+                <select class="form-select" id="rDivisi" onchange="onRkapDivisiChange(this.value)">
+                    <option value="">Pilih Divisi</option>
+                    <option value="DSPN">DSPN - Divisi Sekretariat Perusahaan</option>
+                    <option value="DTPI">DTPI - Divisi Satuan Pengawasan Intern</option>
+                    <option value="DTAN">DTAN - Divisi Tanaman</option>
+                    <option value="DTPL">DTPL - Divisi Teknik &amp; Pengolahan</option>
+                    <option value="DINF">DINF - Divisi Infrastruktur</option>
+                    <option value="DITN">DITN - Divisi Investasi Tanaman</option>
+                    <option value="DPSN">DPSN - Divisi Pemasaran</option>
+                    <option value="DRPL">DRPL - Divisi Rantai Pasok &amp; Logistik</option>
+                    <option value="DPEN">DPEN - Divisi Pengadaan</option>
+                    <option value="DSKP">DSKP - Divisi Strategi Perusahaan &amp; AP</option>
+                    <option value="DSMS">DSMS - Divisi Sistem Manajemen &amp; Sustainability</option>
+                    <option value="DRPH">DRPH - Divisi Riset, Pengembangan Bisnis &amp; Hilirisasi</option>
+                    <option value="DKSH">DKSH - Divisi Keuangan Strategis &amp; Investor</option>
+                    <option value="DPBA">DPBA - Divisi Perbendaharaan &amp; Anggaran</option>
+                    <option value="DAPN">DAPN - Divisi Akuntansi &amp; Perpajakan</option>
+                    <option value="DMRS">DMRS - Divisi Manajemen Risiko</option>
+                    <option value="DPSB">DPSB - Divisi Pengembangan SDM dan Budaya</option>
+                    <option value="DSDM">DSDM - Divisi Operasional SDM</option>
+                    <option value="DHPU">DHPU - Divisi HPS &amp; Umum</option>
+                    <option value="DTIS">DTIS - Divisi Teknologi Informasi</option>
+                    <option value="DHKT">DHKT - Divisi Hubungan Kelembagaan &amp; TJSL</option>
+                    <option value="DHKM">DHKM - Divisi Hukum</option>
+                    <option value="DPSR">DPSR - Divisi PSR dan Plasma</option>
+                    <option value="DPMO">DPMO - Project Management Office</option>
+                </select>
+            </div>
+            <div>
+                <label class="form-label">Cost Center</label>
+                <input type="text" class="form-input" id="rCostCenter" placeholder="Otomatis (PHO0XXXX18)" readonly style="background:#f0f4f5;cursor:not-allowed">
+            </div>
+            <div>
+                <label class="form-label">Nomor GL <span class="text-error">*</span></label>
+                <select class="form-select" id="rGL">
+                    <option value="">Pilih Nomor GL</option>
+                    <option value="51100417">51100417 — Perjalanan Dinas</option>
+                    <option value="51101073">51101073 — Biaya Tiket Moda Transportasi</option>
+                    <option value="51100152">51100152 — Biaya Jasa Sewa Kendaraan</option>
+                    <option value="51100158">51100158 — Biaya Mess</option>
+                    <option value="51100420">51100420 — Biaya Akomodasi</option>
+                    <option value="51100421">51100421 — Biaya Uang Harian</option>
+                    <option value="lainnya">Lainnya (isi manual)</option>
+                </select>
+            </div>
+            <div id="glManualGroup" class="hidden">
+                <label class="form-label">Nomor GL Manual</label>
+                <input type="text" class="form-input" id="rGLManual" placeholder="Masukkan nomor GL">
+            </div>
+            <div>
+                <label class="form-label">Deskripsi / Keterangan</label>
+                <input type="text" class="form-input" id="rDeskripsi" placeholder="Misal: Tiket Pesawat Perjadin Staff 2026">
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <label class="form-label">Pagu RKAP (Rp) <span class="text-error">*</span></label>
+                    <input type="text" class="form-input" id="rPagu" placeholder="Contoh: 100.000.000" oninput="formatPaguInput(this)">
+                </div>
+                <div>
+                    <label class="form-label">Tahun Anggaran</label>
+                    <select class="form-select" id="rTahun">
+                        <option>2025</option><option selected>2026</option><option>2027</option>
+                    </select>
+                </div>
+            </div>
+            <div>
+                <label class="form-label">Catatan</label>
+                <input type="text" class="form-input" id="rCatatan" placeholder="Misal: RKAP Awal / RKAP Perubahan I">
+            </div>
+        </div>
+        <div class="flex justify-end gap-3 mt-6">
+            <button onclick="closeModal()" class="btn-secondary">Batal</button>
+            <button onclick="saveRKAP()" class="btn-primary">
+                <span class="material-symbols-outlined text-[18px]">save</span>Simpan
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: REVISI RKAP -->
+<div class="modal-overlay" id="revisiModal">
+    <div class="modal-box">
+        <div class="flex items-center gap-3 mb-5">
+            <div class="w-10 h-10 rounded-xl bg-orange-100 flex items-center justify-center">
+                <span class="material-symbols-outlined text-orange-500">swap_horiz</span>
+            </div>
+            <div>
+                <h2 class="text-[18px] font-bold">Tambah Revisi RKAP</h2>
+                <p class="text-[12px] text-on-surface-variant">Pemindahan anggaran antar divisi atau perubahan pagu</p>
+            </div>
+        </div>
+        <div class="space-y-4">
+            <div class="bg-amber-50 border border-amber-200 rounded-xl p-4">
+                <p class="text-[12px] text-amber-800">💡 <strong>Contoh kasus:</strong> Sub-divisi Umum pindah dari DHPU ke DPEN. Pilih tipe "Pemindahan", pilih divisi asal (DHPU) dan divisi tujuan (DPEN), masukkan nominal anggaran yang dipindahkan.</p>
+            </div>
+            <div>
+                <label class="form-label">Tipe Revisi <span class="text-error">*</span></label>
+                <select class="form-select" id="revTipe" onchange="toggleRevisiFields(this.value)">
+                    <option value="">Pilih tipe</option>
+                    <option value="transfer">🔄 Pemindahan Anggaran (antar divisi)</option>
+                    <option value="tambah">➕ Penambahan Pagu</option>
+                    <option value="kurang">➖ Pengurangan Pagu</option>
+                </select>
+            </div>
+            <!-- Transfer fields -->
+            <div id="transferFields" class="hidden space-y-3">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="form-label">Dari Divisi (Pengirim)</label>
+                        <select class="form-select" id="revDariDiv" onchange="filterRevisiGL('dari')">
+                            <option value="">Pilih divisi</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="form-label">Ke Divisi (Penerima)</label>
+                        <select class="form-select" id="revKeDiv" onchange="filterRevisiGL('ke')">
+                            <option value="">Pilih divisi</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="form-label">GL Pengirim</label>
+                        <select class="form-select" id="revDariGL"><option value="">Pilih GL</option></select>
+                    </div>
+                    <div>
+                        <label class="form-label">GL Penerima</label>
+                        <select class="form-select" id="revKeGL"><option value="">Pilih GL</option></select>
+                    </div>
+                </div>
+            </div>
+            <!-- Non-transfer fields -->
+            <div id="singleFields" class="hidden space-y-3">
+                <div>
+                    <label class="form-label">Divisi <span class="text-error">*</span></label>
+                    <select class="form-select" id="revSingleDiv">
+                        <option value="">Pilih divisi</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="form-label">Nomor GL <span class="text-error">*</span></label>
+                    <select class="form-select" id="revSingleGL"><option value="">Pilih GL</option></select>
+                </div>
+            </div>
+            <!-- Common fields -->
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <label class="form-label">Nominal (Rp) <span class="text-error">*</span></label>
+                    <input type="text" class="form-input" id="revNominal" placeholder="Nominal revisi" oninput="formatPaguInput(this)">
+                </div>
+                <div>
+                    <label class="form-label">Tanggal Efektif <span class="text-error">*</span></label>
+                    <input type="date" class="form-input" id="revTanggal">
+                </div>
+            </div>
+            <div>
+                <label class="form-label">Alasan / Dasar Revisi <span class="text-error">*</span></label>
+                <input type="text" class="form-input" id="revAlasan" placeholder="Misal: Pemindahan Sub-divisi Umum ke DPEN sesuai SK Direksi No. xxx">
+            </div>
+        </div>
+        <div class="flex justify-end gap-3 mt-6">
+            <button onclick="document.getElementById('revisiModal').classList.remove('open')" class="btn-secondary">Batal</button>
+            <button onclick="saveRevisi()" class="btn-primary">
+                <span class="material-symbols-outlined text-[18px]">save</span>Simpan Revisi
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toastMsg"></div>
+
+<script>
+// ============================================================
+// DATA & STATE
+// ============================================================
+const LS_RKAP     = 'ptpn4_rkap_entries';
+const LS_REVISI   = 'ptpn4_rkap_revisi';
+const LS_ENTRIES  = 'ptpn4_input_entries';
+
+const DIVISI_MAP = {
+    'DSPN':'PHO0DSPN18','DTPI':'PHO0DTPI18','DTAN':'PHO0DTAN18',
+    'DTPL':'PHO0DTPL18','DINF':'PHO0DINF18','DITN':'PHO0DITN18',
+    'DPSN':'PHO0DPSN18','DRPL':'PHO0DRPL18','DPEN':'PHO0DPEN18',
+    'DSKP':'PHO0DSKP18','DSMS':'PHO0DSMS18','DRPH':'PHO0DRPH18',
+    'DKSH':'PHO0DKSH18','DPBA':'PHO0DPBA18','DAPN':'PHO0DAPN18',
+    'DMRS':'PHO0DMRS18','DPSB':'PHO0DPSB18','DSDM':'PHO0DSDM18',
+    'DHPU':'PHO0DHPU18','DTIS':'PHO0DTIS18','DHKT':'PHO0DHKT18',
+    'DHKM':'PHO0DHKM18','DPSR':'PHO0DPSR18','DPMO':'PHO0DPMO18'
+};
+
+const GL_DESC = {
+    '51100417':'Perjalanan Dinas','51101073':'Biaya Tiket Moda Transportasi',
+    '51100152':'Biaya Jasa Sewa Kendaraan','51100158':'Biaya Mess',
+    '51100420':'Biaya Akomodasi','51100421':'Biaya Uang Harian'
+};
+
+let rkapData    = [];
+let revisiData  = [];
+let editId      = null;
+
+function loadData() {
+    try { rkapData   = JSON.parse(localStorage.getItem(LS_RKAP)   || '[]'); } catch(e) { rkapData = []; }
+    try { revisiData = JSON.parse(localStorage.getItem(LS_REVISI) || '[]'); } catch(e) { revisiData = []; }
+}
+
+function saveData() {
+    localStorage.setItem(LS_RKAP,   JSON.stringify(rkapData));
+    localStorage.setItem(LS_REVISI, JSON.stringify(revisiData));
+}
+
+// Get realisasi from input entries
+function getRealisasiByDivisiGL(divisi, gl) {
+    try {
+        const entries = JSON.parse(localStorage.getItem(LS_ENTRIES) || '[]');
+        return entries.filter(e => e.divisi === divisi && (e.kode_sap === gl || !gl))
+                      .reduce((s, e) => s + (e.yang_dibayarkan || 0), 0);
+    } catch(e) { return 0; }
+}
+
+// Compute effective pagu (with revisions)
+function getEffectivePagu(rkapItem) {
+    const revisions = revisiData.filter(r => {
+        const tahun = new Date(r.tanggal_efektif).getFullYear() + '';
+        const selTahun = document.getElementById('tahunSelect').value;
+        if (tahun !== selTahun) return false;
+        if (r.tipe === 'transfer') {
+            return (r.ke_divisi === rkapItem.divisi && r.ke_gl === rkapItem.gl_kode) ||
+                   (r.dari_divisi === rkapItem.divisi && r.dari_gl === rkapItem.gl_kode);
+        }
+        return r.divisi === rkapItem.divisi && r.gl_kode === rkapItem.gl_kode;
+    });
+
+    let delta = 0;
+    revisions.forEach(r => {
+        if (r.tipe === 'transfer') {
+            if (r.ke_divisi === rkapItem.divisi && r.ke_gl === rkapItem.gl_kode) delta += r.nominal;
+            if (r.dari_divisi === rkapItem.divisi && r.dari_gl === rkapItem.gl_kode) delta -= r.nominal;
+        } else if (r.tipe === 'tambah') {
+            delta += r.nominal;
+        } else if (r.tipe === 'kurang') {
+            delta -= r.nominal;
+        }
+    });
+    return rkapItem.pagu + delta;
+}
+
+// ============================================================
+// FORMAT
+// ============================================================
+function fmtCur(n) { return 'Rp ' + new Intl.NumberFormat('id-ID').format(n || 0); }
+function parseCur(s) { return Number(String(s).replace(/[^0-9]/g,'')) || 0; }
+function formatPaguInput(el) {
+    const raw = parseCur(el.value);
+    el.value = raw ? new Intl.NumberFormat('id-ID').format(raw) : '';
+}
+
+// ============================================================
+// RENDER
+// ============================================================
+function renderAll() {
+    loadData();
+    renderSummary();
+    renderRKAP();
+    renderRevisi();
+}
+
+function renderSummary() {
+    const selTahun = document.getElementById('tahunSelect').value;
+    const filtered = rkapData.filter(r => r.tahun === selTahun);
+    const totalPagu = filtered.reduce((s, r) => s + r.pagu, 0);
+    const totalEff  = filtered.reduce((s, r) => s + getEffectivePagu(r), 0);
+    const totalReal = filtered.reduce((s, r) => s + getRealisasiByDivisiGL(r.divisi, r.gl_kode), 0);
+    const totalRevisi = revisiData.filter(r => new Date(r.tanggal_efektif).getFullYear() + '' === selTahun).length;
+
+    document.getElementById('summaryCards').innerHTML = `
+        <div class="bg-surface-container-lowest rounded-2xl card-shadow p-5">
+            <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center mb-3">
+                <span class="material-symbols-outlined text-primary">account_balance_wallet</span>
+            </div>
+            <p class="text-[12px] text-on-surface-variant font-medium">Total Pagu RKAP</p>
+            <p class="text-[20px] font-bold text-on-surface mt-1 font-['JetBrains_Mono']">${fmtCur(totalPagu)}</p>
+            <p class="text-[11px] text-on-surface-variant mt-1">${filtered.length} entri • Tahun ${selTahun}</p>
+        </div>
+        <div class="bg-surface-container-lowest rounded-2xl card-shadow p-5">
+            <div class="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center mb-3">
+                <span class="material-symbols-outlined text-blue-500">tune</span>
+            </div>
+            <p class="text-[12px] text-on-surface-variant font-medium">Pagu Efektif (Pasca Revisi)</p>
+            <p class="text-[20px] font-bold text-on-surface mt-1 font-['JetBrains_Mono']">${fmtCur(totalEff)}</p>
+            <p class="text-[11px] text-on-surface-variant mt-1">${totalRevisi} revisi tercatat</p>
+        </div>
+        <div class="bg-surface-container-lowest rounded-2xl card-shadow p-5">
+            <div class="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center mb-3">
+                <span class="material-symbols-outlined text-emerald-500">payments</span>
+            </div>
+            <p class="text-[12px] text-on-surface-variant font-medium">Realisasi</p>
+            <p class="text-[20px] font-bold text-emerald-600 mt-1 font-['JetBrains_Mono']">${fmtCur(totalReal)}</p>
+            <p class="text-[11px] text-on-surface-variant mt-1">${totalEff ? ((totalReal/totalEff)*100).toFixed(1) : 0}% dari pagu efektif</p>
+        </div>
+        <div class="bg-surface-container-lowest rounded-2xl card-shadow p-5">
+            <div class="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center mb-3">
+                <span class="material-symbols-outlined text-amber-500">savings</span>
+            </div>
+            <p class="text-[12px] text-on-surface-variant font-medium">Sisa Anggaran</p>
+            <p class="text-[20px] font-bold ${totalEff - totalReal >= 0 ? 'text-primary' : 'text-error'} mt-1 font-['JetBrains_Mono']">${fmtCur(Math.abs(totalEff - totalReal))}</p>
+            <p class="text-[11px] ${totalEff - totalReal >= 0 ? 'text-emerald-600' : 'text-error'} mt-1">${totalEff - totalReal >= 0 ? '✅ Dalam batas' : '⚠️ Melebihi pagu'}</p>
+        </div>
+    `;
+}
+
+function renderRKAP() {
+    const selTahun = document.getElementById('tahunSelect').value;
+    const searchQ  = (document.getElementById('searchDivisi')?.value || '').toLowerCase();
+    const filtered = rkapData.filter(r =>
+        r.tahun === selTahun &&
+        (!searchQ || r.divisi.toLowerCase().includes(searchQ) || (r.deskripsi || '').toLowerCase().includes(searchQ))
+    );
+
+    // Group by divisi
+    const groups = {};
+    filtered.forEach(r => {
+        if (!groups[r.divisi]) groups[r.divisi] = [];
+        groups[r.divisi].push(r);
+    });
+
+    const tbody = document.getElementById('rkapTableBody');
+    if (!filtered.length) {
+        tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:40px;color:#6d797b">Belum ada data RKAP ${selTahun}. Klik "Tambah RKAP" untuk mulai.</td></tr>`;
+        document.getElementById('rkapSubtitle').textContent = `Tidak ada data untuk tahun ${selTahun}`;
+        document.getElementById('rkapFooter').textContent = '';
+        return;
+    }
+
+    let rows = '';
+    let gtPagu = 0, gtEff = 0, gtReal = 0;
+
+    Object.entries(groups).forEach(([div, items]) => {
+        let stPagu = 0, stEff = 0, stReal = 0;
+        // Divisi header
+        rows += `<tr class="divisi-header-row"><td colspan="9" style="padding:10px 14px;font-size:13px;">📂 ${div} — ${DIVISI_MAP[div] || ''}</td></tr>`;
+
+        items.forEach(r => {
+            const eff  = getEffectivePagu(r);
+            const real = getRealisasiByDivisiGL(r.divisi, r.gl_kode);
+            const sisa = eff - real;
+            const pct  = eff ? Math.min((real / eff) * 100, 100) : 0;
+            const glDesc = GL_DESC[r.gl_kode] || r.gl_kode;
+            const revNominal = eff - r.pagu;
+            stPagu += r.pagu; stEff += eff; stReal += real;
+
+            rows += `<tr>
+                <td style="text-align:left;color:#6d797b;font-size:11px">${r.divisi}</td>
+                <td style="text-align:left;font-size:11px;font-family:'JetBrains Mono',monospace">${r.cost_center || DIVISI_MAP[r.divisi] || ''}</td>
+                <td style="text-align:left">
+                    <span style="font-size:12px;font-family:'JetBrains Mono',monospace;font-weight:600;color:#006670">${r.gl_kode}</span>
+                    <span style="font-size:11px;color:#6d797b;display:block">${glDesc}${r.deskripsi ? ' — ' + r.deskripsi : ''}</span>
+                </td>
+                <td style="font-family:'JetBrains Mono',monospace">${fmtCur(r.pagu)}</td>
+                <td style="font-family:'JetBrains Mono',monospace">
+                    ${revNominal !== 0 ? `<span class="revisi-badge ${revNominal > 0 ? 'badge-plus' : 'badge-minus'}">${revNominal > 0 ? '+' : ''}${fmtCur(revNominal)}</span>` : '<span style="color:#bdc9cb">—</span>'}
+                </td>
+                <td style="font-family:'JetBrains Mono',monospace;font-weight:600">${fmtCur(eff)}</td>
+                <td style="font-family:'JetBrains Mono',monospace;color:#006670">${fmtCur(real)}</td>
+                <td style="font-family:'JetBrains Mono',monospace">
+                    <span style="color:${sisa >= 0 ? '#006670' : '#ba1a1a'};font-weight:600">${fmtCur(Math.abs(sisa))}</span>
+                    <div class="pagu-bar"><div class="pagu-fill" style="width:${pct}%;background:${pct > 90 ? '#ba1a1a' : pct > 70 ? '#f59e0b' : '#006670'}"></div></div>
+                    <span style="font-size:10px;color:#6d797b">${pct.toFixed(0)}%</span>
+                </td>
+                <td style="text-align:left">
+                    <div style="display:flex;gap:4px;">
+                        <button class="btn-edit" onclick="openModal('edit','${r.id}')">Edit</button>
+                        <button class="btn-danger" onclick="deleteRKAP('${r.id}')">Hapus</button>
+                    </div>
+                </td>
+            </tr>`;
+        });
+
+        // Subtotal per divisi
+        rows += `<tr class="subtotal-row">
+            <td colspan="3" style="text-align:left">Total ${div}</td>
+            <td>${fmtCur(stPagu)}</td><td></td>
+            <td>${fmtCur(stEff)}</td>
+            <td style="color:#006670">${fmtCur(stReal)}</td>
+            <td>${fmtCur(stEff - stReal)}</td>
+            <td></td>
+        </tr>
+        <tr><td colspan="9" style="height:10px;background:#f6fafb;border:none"></td></tr>`;
+
+        gtPagu += stPagu; gtEff += stEff; gtReal += stReal;
+    });
+
+    // Grand total
+    rows += `<tr class="grandtotal-row">
+        <td colspan="3">🏆 TOTAL KESELURUHAN</td>
+        <td>${fmtCur(gtPagu)}</td><td></td>
+        <td>${fmtCur(gtEff)}</td>
+        <td>${fmtCur(gtReal)}</td>
+        <td>${fmtCur(gtEff - gtReal)}</td>
+        <td></td>
+    </tr>`;
+
+    tbody.innerHTML = rows;
+    document.getElementById('rkapSubtitle').textContent = `${filtered.length} entri • ${Object.keys(groups).length} divisi • Tahun ${selTahun}`;
+    document.getElementById('rkapFooter').textContent = `Total Pagu: ${fmtCur(gtPagu)} | Efektif: ${fmtCur(gtEff)} | Realisasi: ${fmtCur(gtReal)} | Sisa: ${fmtCur(gtEff - gtReal)}`;
+}
+
+function renderRevisi() {
+    const selTahun = document.getElementById('tahunSelect').value;
+    const filtered = revisiData.filter(r => new Date(r.tanggal_efektif).getFullYear() + '' === selTahun);
+    const tbody = document.getElementById('revisiTableBody');
+    if (!filtered.length) {
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:40px;color:#6d797b">Belum ada riwayat revisi tahun ${selTahun}.</td></tr>`;
+        return;
+    }
+    tbody.innerHTML = filtered.slice().reverse().map(r => {
+        const tipeLabel = r.tipe === 'transfer' ? `🔄 Pindah ${r.dari_divisi}→${r.ke_divisi}` :
+                          r.tipe === 'tambah' ? `➕ Tambah (${r.divisi})` : `➖ Kurang (${r.divisi})`;
+        return `<tr>
+            <td style="text-align:left;font-family:Inter">${r.tanggal_efektif}</td>
+            <td style="text-align:left;font-family:Inter;font-weight:600">${r.tipe === 'transfer' ? r.dari_divisi + ' → ' + r.ke_divisi : r.divisi}</td>
+            <td style="text-align:left;font-family:'JetBrains Mono',monospace;font-size:11px">${r.tipe === 'transfer' ? (r.dari_gl || '') + ' → ' + (r.ke_gl || '') : r.gl_kode}</td>
+            <td><span class="revisi-badge ${r.tipe === 'tambah' ? 'badge-plus' : r.tipe === 'kurang' ? 'badge-minus' : 'bg-blue-100 text-blue-800'}">${tipeLabel}</span></td>
+            <td style="font-family:'JetBrains Mono',monospace">${fmtCur(r.nominal)}</td>
+            <td style="text-align:left;font-family:Inter;font-size:12px;color:#6d797b">${r.alasan}</td>
+            <td style="text-align:left"><button class="btn-danger" onclick="deleteRevisi('${r.id}')">Hapus</button></td>
+        </tr>`;
+    }).join('');
+}
+
+// ============================================================
+// MODAL RKAP
+// ============================================================
+function openModal(mode, id = null) {
+    editId = id;
+    document.getElementById('modalTitle').textContent = mode === 'add' ? 'Tambah RKAP' : 'Edit RKAP';
+    document.getElementById('glManualGroup').classList.add('hidden');
+    if (mode === 'edit' && id) {
+        const r = rkapData.find(x => x.id === id);
+        if (!r) return;
+        document.getElementById('rDivisi').value = r.divisi;
+        document.getElementById('rCostCenter').value = r.cost_center || DIVISI_MAP[r.divisi] || '';
+        document.getElementById('rGL').value = GL_DESC[r.gl_kode] ? r.gl_kode : 'lainnya';
+        if (!GL_DESC[r.gl_kode]) {
+            document.getElementById('glManualGroup').classList.remove('hidden');
+            document.getElementById('rGLManual').value = r.gl_kode;
+        }
+        document.getElementById('rDeskripsi').value = r.deskripsi || '';
+        document.getElementById('rPagu').value = new Intl.NumberFormat('id-ID').format(r.pagu);
+        document.getElementById('rTahun').value = r.tahun;
+        document.getElementById('rCatatan').value = r.catatan || '';
+    } else {
+        ['rDivisi','rGL','rDeskripsi','rPagu','rCatatan'].forEach(id => document.getElementById(id).value = '');
+        document.getElementById('rCostCenter').value = '';
+        document.getElementById('rTahun').value = document.getElementById('tahunSelect').value;
+    }
+    document.getElementById('rkapModal').classList.add('open');
+}
+
+function closeModal() { document.getElementById('rkapModal').classList.remove('open'); }
+
+function onRkapDivisiChange(val) {
+    document.getElementById('rCostCenter').value = DIVISI_MAP[val] || '';
+}
+
+document.getElementById('rGL').addEventListener('change', function() {
+    document.getElementById('glManualGroup').classList.toggle('hidden', this.value !== 'lainnya');
+});
+
+function saveRKAP() {
+    const divisi = document.getElementById('rDivisi').value;
+    const glSel  = document.getElementById('rGL').value;
+    const gl     = glSel === 'lainnya' ? document.getElementById('rGLManual').value.trim() : glSel;
+    const pagu   = parseCur(document.getElementById('rPagu').value);
+    const tahun  = document.getElementById('rTahun').value;
+
+    if (!divisi || !gl || !pagu) {
+        showToast('⚠️ Divisi, GL, dan Pagu wajib diisi'); return;
+    }
+
+    const entry = {
+        id: editId || ('rkap_' + Date.now()),
+        divisi, cost_center: DIVISI_MAP[divisi] || '',
+        gl_kode: gl, deskripsi: document.getElementById('rDeskripsi').value,
+        pagu, tahun, catatan: document.getElementById('rCatatan').value,
+        created_at: new Date().toISOString()
+    };
+
+    if (editId) {
+        const idx = rkapData.findIndex(r => r.id === editId);
+        if (idx >= 0) rkapData[idx] = entry;
+    } else {
+        rkapData.push(entry);
+    }
+    saveData(); renderAll(); closeModal();
+    showToast(editId ? '✅ RKAP diperbarui' : '✅ RKAP berhasil ditambahkan');
+    editId = null;
+}
+
+function deleteRKAP(id) {
+    if (!confirm('Hapus entri RKAP ini?')) return;
+    rkapData = rkapData.filter(r => r.id !== id);
+    saveData(); renderAll();
+    showToast('🗑️ RKAP dihapus');
+}
+
+// ============================================================
+// MODAL REVISI
+// ============================================================
+function openRevisiModal() {
+    ['revTipe','revNominal','revAlasan','revTanggal','revDariDiv','revKeDiv'].forEach(id => {
+        const el = document.getElementById(id); if (el) el.value = '';
+    });
+    document.getElementById('transferFields').classList.add('hidden');
+    document.getElementById('singleFields').classList.add('hidden');
+    populateRevisiDivisiDropdowns();
+    document.getElementById('revisiModal').classList.add('open');
+}
+
+function populateRevisiDivisiDropdowns() {
+    const divisis = [...new Set(rkapData.map(r => r.divisi))].sort();
+    const opts = divisis.map(d => `<option value="${d}">${d}</option>`).join('');
+    ['revDariDiv','revKeDiv','revSingleDiv'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.innerHTML = '<option value="">Pilih divisi</option>' + opts;
+    });
+}
+
+function toggleRevisiFields(tipe) {
+    document.getElementById('transferFields').classList.toggle('hidden', tipe !== 'transfer');
+    document.getElementById('singleFields').classList.toggle('hidden', tipe === 'transfer' || !tipe);
+}
+
+function filterRevisiGL(side) {
+    const divEl = document.getElementById(side === 'dari' ? 'revDariDiv' : 'revKeDiv');
+    const glEl  = document.getElementById(side === 'dari' ? 'revDariGL' : 'revKeGL');
+    const div = divEl.value;
+    const gls = rkapData.filter(r => r.divisi === div).map(r => r.gl_kode);
+    glEl.innerHTML = '<option value="">Pilih GL</option>' + gls.map(g => `<option value="${g}">${g} — ${GL_DESC[g] || g}</option>`).join('');
+}
+
+function saveRevisi() {
+    const tipe    = document.getElementById('revTipe').value;
+    const nominal = parseCur(document.getElementById('revNominal').value);
+    const tanggal = document.getElementById('revTanggal').value;
+    const alasan  = document.getElementById('revAlasan').value.trim();
+    if (!tipe || !nominal || !tanggal || !alasan) {
+        showToast('⚠️ Semua field wajib diisi'); return;
+    }
+    const entry = { id: 'rev_' + Date.now(), tipe, nominal, tanggal_efektif: tanggal, alasan };
+    if (tipe === 'transfer') {
+        entry.dari_divisi = document.getElementById('revDariDiv').value;
+        entry.ke_divisi   = document.getElementById('revKeDiv').value;
+        entry.dari_gl     = document.getElementById('revDariGL').value;
+        entry.ke_gl       = document.getElementById('revKeGL').value;
+        if (!entry.dari_divisi || !entry.ke_divisi) { showToast('⚠️ Divisi pengirim dan penerima wajib diisi'); return; }
+    } else {
+        entry.divisi   = document.getElementById('revSingleDiv').value;
+        entry.gl_kode  = document.getElementById('revSingleGL').value;
+        if (!entry.divisi) { showToast('⚠️ Divisi wajib diisi'); return; }
+    }
+    revisiData.push(entry);
+    saveData(); renderAll();
+    document.getElementById('revisiModal').classList.remove('open');
+    showToast('✅ Revisi RKAP berhasil disimpan');
+}
+
+function deleteRevisi(id) {
+    if (!confirm('Hapus revisi ini?')) return;
+    revisiData = revisiData.filter(r => r.id !== id);
+    saveData(); renderAll();
+    showToast('🗑️ Revisi dihapus');
+}
+
+// ============================================================
+// TABS & EXPORT
+// ============================================================
+function switchTab(tab) {
+    document.getElementById('view-rkap').classList.toggle('hidden', tab !== 'rkap');
+    document.getElementById('view-revisi').classList.toggle('hidden', tab !== 'revisi');
+    document.getElementById('tab-rkap').classList.toggle('active', tab === 'rkap');
+    document.getElementById('tab-revisi').classList.toggle('active', tab === 'revisi');
+}
+
+function exportRKAP() {
+    showToast('📥 Fitur export akan segera tersedia');
+}
+
+// ============================================================
+// TOAST
+// ============================================================
+function showToast(msg, dur=3000) {
+    const t = document.getElementById('toastMsg');
+    t.textContent = msg; t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), dur);
+}
+
+// INIT
+renderAll();
+</script>
+</body>
+</html>

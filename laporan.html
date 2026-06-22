@@ -1,0 +1,426 @@
+<!DOCTYPE html><html lang="id"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Laporan - PTPN IV</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500;600&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-tint": "#006973",
+                        "on-surface": "#171c1d",
+                        "on-primary": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-container": "#f7feff",
+                        "on-primary-fixed-variant": "#004f57",
+                        "outline-variant": "#bdc9cb",
+                        "on-surface-variant": "#3d494b",
+                        "surface-dim": "#d6dbdb",
+                        "primary-fixed": "#93f1ff",
+                        "surface-variant": "#dfe3e4",
+                        "on-secondary-fixed-variant": "#3e4c00",
+                        "surface": "#f6fafb",
+                        "on-secondary-fixed": "#171e00",
+                        "on-primary-fixed": "#001f23",
+                        "secondary-container": "#d2ef69",
+                        "inverse-surface": "#2c3132",
+                        "tertiary-fixed-dim": "#8cd2dc",
+                        "surface-container-low": "#f0f4f5",
+                        "primary-container": "#00818e",
+                        "on-error-container": "#93000a",
+                        "on-background": "#171c1d",
+                        "tertiary-container": "#367e88",
+                        "background": "#f6fafb",
+                        "secondary-fixed": "#d2ef69",
+                        "on-tertiary-fixed-variant": "#004f57",
+                        "on-error": "#ffffff",
+                        "inverse-on-surface": "#edf1f2",
+                        "surface-container": "#eaefef",
+                        "surface-bright": "#f6fafb",
+                        "tertiary": "#15656e",
+                        "primary": "#006670",
+                        "on-tertiary-fixed": "#001f23",
+                        "on-secondary": "#ffffff",
+                        "primary-fixed-dim": "#6dd5e4",
+                        "on-tertiary-container": "#f6feff",
+                        "secondary": "#536600",
+                        "error": "#ba1a1a",
+                        "secondary-fixed-dim": "#b6d250",
+                        "tertiary-fixed": "#a8eef8",
+                        "surface-container-high": "#e4e9ea",
+                        "surface-container-highest": "#dfe3e4",
+                        "outline": "#6d797b",
+                        "on-secondary-container": "#586c00",
+                        "error-container": "#ffdad6",
+                        "inverse-primary": "#6dd5e4"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-padding": "24px",
+                        "card-gap": "20px",
+                        "unit": "4px",
+                        "gutter": "16px"
+                    },
+                    "fontFamily": {
+                        "financial-sm": ["JetBrains Mono"],
+                        "label-sm": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "financial-lg": ["JetBrains Mono"],
+                        "body-base": ["Inter"]
+                    },
+                    "fontSize": {
+                        "financial-sm": ["14px", { "lineHeight": "20px", "fontWeight": "500" }],
+                        "label-sm": ["13px", { "lineHeight": "18px", "fontWeight": "500" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "display-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "financial-lg": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "body-base": ["16px", { "lineHeight": "24px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Sidebar active state */
+        .nav-link {
+            transition: all 0.2s ease;
+            border-left: 4px solid transparent;
+        }
+        .nav-link:hover {
+            color: white !important;
+            background: rgba(13, 148, 136, 0.2);
+        }
+        .nav-link.active {
+            color: #b6d250 !important;
+            border-left-color: #b6d250;
+            background: rgba(13, 148, 136, 0.2);
+        }
+        .nav-link.active span:first-child {
+            color: #b6d250;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-base text-body-base min-h-screen font-['Inter']">
+
+<!-- ============================================================
+     SIDEBAR NAVIGATION (Shared across all pages)
+     ============================================================ -->
+<nav class="bg-[#0c616a] dark:bg-slate-950 fixed h-screen w-[260px] left-0 top-0 border-r border-teal-900/20 shadow-xl flex flex-col pt-6 pb-4 z-50">
+    <!-- Logo -->
+    <div class="px-6 mb-8 pt-6">
+        <h1 class="font-display-lg text-[20px] font-black tracking-tight text-white leading-tight uppercase">PTPN IV</h1>
+        <p class="font-label-sm text-[12px] tracking-wide text-teal-200/70 mt-1">Agro-Corporate Portal</p>
+    </div>
+
+    <!-- Navigation Links -->
+    <div class="flex flex-col gap-1 flex-1 font-inter text-sm tracking-wide">
+        <!-- Dashboard -->
+        <a class="nav-link flex items-center gap-4 px-6 py-4 text-white/70" href="index.html">
+            <span class="material-symbols-outlined">dashboard</span>
+            <span class="font-semibold">Dashboard</span>
+        </a>
+        <!-- Input Data -->
+        <a class="nav-link flex items-center gap-4 px-6 py-4 text-white/70" href="input.html">
+            <span class="material-symbols-outlined">edit_note</span>
+            <span class="">Input Data</span>
+        </a>
+        <!-- Upload Data -->
+        <a class="nav-link flex items-center gap-4 px-6 py-4 text-white/70" href="upload.html">
+            <span class="material-symbols-outlined">cloud_upload</span>
+            <span class="">Upload Data</span>
+        </a>
+        <!-- Laporan (Active on this page) -->
+        <a class="nav-link active flex items-center gap-4 px-6 py-4 text-white/70" href="laporan.html">
+            <span class="material-symbols-outlined">description</span>
+            <span class="">Laporan</span>
+        </a>
+        <!-- RKAP -->
+        <a class="nav-link flex items-center gap-4 px-6 py-4 text-white/70" href="rkap.html">
+            <span class="material-symbols-outlined">account_balance_wallet</span>
+            <span class="">RKAP</span>
+        </a>
+        <!-- Pengaturan -->
+        <a class="nav-link flex items-center gap-4 px-6 py-4 text-white/70" href="pengaturan.html">
+            <span class="material-symbols-outlined">settings</span>
+            <span class="">Pengaturan</span>
+        </a>
+    </div>
+
+    <!-- User Profile -->
+    <div class="mt-auto p-6 border-t border-teal-900/50">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full overflow-hidden border border-teal-800 flex items-center justify-center bg-teal-700 text-white font-bold text-sm">
+                BS
+            </div>
+            <div class="flex flex-col">
+                <span class="text-white font-bold text-[14px] leading-tight">Budi Santoso</span>
+                <span class="text-teal-200/70 text-[11px]">Finance Director</span>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- TopNavBar -->
+<header class="fixed top-0 right-0 left-[260px] h-16 flex items-center justify-between px-8 z-30 bg-white/90 dark:bg-slate-950/90 backdrop-blur-md border-b border-slate-100 dark:border-slate-800 shadow-[0_2px_12px_rgba(12,97,106,0.08)]">
+<div class="flex items-center gap-4">
+<span class="text-lg font-bold text-[#0c616a] dark:text-white">Executive Dashboard</span>
+<div class="relative hidden md:block ml-8">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">search</span>
+<input class="pl-9 pr-4 py-1.5 bg-surface rounded-full border border-surface-variant focus:border-primary focus:ring-1 focus:ring-primary text-sm w-64 outline-none transition-shadow" placeholder="Search..." type="text">
+</div>
+</div>
+<div class="flex items-center gap-6">
+<button class="text-slate-500 hover:text-[#1594a2] transition-colors relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-error rounded-full border-2 border-white"></span>
+</button>
+<div class="flex items-center gap-3 border-l border-slate-200 pl-6">
+<div class="text-right hidden sm:block">
+<p class="text-sm font-medium text-on-surface">Budi Santoso</p>
+<p class="text-xs text-on-surface-variant">Finance Director</p>
+</div>
+<div class="w-8 h-8 rounded-full border border-slate-200 bg-teal-700 text-white flex items-center justify-center text-xs font-bold">BS</div>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-[260px] pt-24 px-container-padding pb-12">
+<div class="max-w-[1600px] mx-auto">
+<!-- Page Header -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface mb-1">Detailed Reports</h2>
+<p class="text-on-surface-variant text-sm">Analisis komprehensif data finansial dan operasional.</p>
+</div>
+<div class="flex items-center gap-3">
+<button class="flex items-center gap-2 px-4 py-2 border border-outline-variant rounded-lg text-on-surface hover:bg-surface-container transition-colors text-sm font-medium">
+<span class="material-symbols-outlined text-[18px]">download</span>
+                        Export CSV
+                    </button>
+<button class="flex items-center gap-2 px-4 py-2 bg-primary text-on-primary rounded-lg hover:bg-surface-tint transition-colors text-sm font-medium shadow-[0_2px_8px_rgba(0,102,112,0.2)]">
+<span class="material-symbols-outlined text-[18px]">print</span>
+                        Print Report
+                    </button>
+</div>
+</div>
+<!-- Summary Stats Bento -->
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-card-gap mb-8">
+<div class="bg-surface-container-lowest rounded-xl p-6 shadow-[0_2px_12px_rgba(12,97,106,0.08)] border border-surface-container">
+<div class="flex items-center justify-between mb-4">
+<h3 class="font-label-sm text-label-sm text-on-surface-variant">Total Tagihan (YTD)</h3>
+<div class="w-8 h-8 rounded-full bg-primary-container/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-[20px]">account_balance_wallet</span>
+</div>
+</div>
+<p class="font-financial-lg text-financial-lg text-on-surface mb-1">Rp 45.2B</p>
+<div class="flex items-center gap-1 text-sm">
+<span class="material-symbols-outlined text-secondary text-[16px]">trending_up</span>
+<span class="text-secondary font-medium">+12.5%</span>
+<span class="text-on-surface-variant text-xs ml-1">vs last year</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest rounded-xl p-6 shadow-[0_2px_12px_rgba(12,97,106,0.08)] border border-surface-container">
+<div class="flex items-center justify-between mb-4">
+<h3 class="font-label-sm text-label-sm text-on-surface-variant">Average Value</h3>
+<div class="w-8 h-8 rounded-full bg-tertiary-container/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-tertiary text-[20px]">analytics</span>
+</div>
+</div>
+<p class="font-financial-lg text-financial-lg text-on-surface mb-1">Rp 125.4M</p>
+<div class="flex items-center gap-1 text-sm">
+<span class="material-symbols-outlined text-error text-[16px]">trending_down</span>
+<span class="text-error font-medium">-2.1%</span>
+<span class="text-on-surface-variant text-xs ml-1">vs last month</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest rounded-xl p-6 shadow-[0_2px_12px_rgba(12,97,106,0.08)] border border-surface-container">
+<div class="flex items-center justify-between mb-4">
+<h3 class="font-label-sm text-label-sm text-on-surface-variant">Max Transaction</h3>
+<div class="w-8 h-8 rounded-full bg-secondary-container/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary text-[20px]">keyboard_double_arrow_up</span>
+</div>
+</div>
+<p class="font-financial-lg text-financial-lg text-on-surface mb-1">Rp 2.1B</p>
+<div class="text-xs text-on-surface-variant mt-2">
+                        Divisi: <span class="font-medium text-on-surface">Kelapa Sawit Utara</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest rounded-xl p-6 shadow-[0_2px_12px_rgba(12,97,106,0.08)] border border-surface-container">
+<div class="flex items-center justify-between mb-4">
+<h3 class="font-label-sm text-label-sm text-on-surface-variant">Total Records</h3>
+<div class="w-8 h-8 rounded-full bg-surface-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-on-surface-variant text-[20px]">table_rows</span>
+</div>
+</div>
+<p class="font-financial-lg text-financial-lg text-on-surface mb-1">3,492</p>
+<div class="w-full bg-surface-container h-1.5 rounded-full mt-3 overflow-hidden">
+<div class="bg-primary h-full rounded-full" style="width: 75%"></div>
+</div>
+</div>
+</div>
+<!-- Filters Section -->
+<div class="bg-surface-container-lowest rounded-xl p-6 shadow-[0_2px_12px_rgba(12,97,106,0.08)] border border-surface-container mb-8">
+<div class="flex flex-wrap items-end gap-6">
+<div class="flex-1 min-w-[200px]">
+<label class="block font-label-sm text-label-sm text-on-surface-variant mb-2">Date Range</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">calendar_today</span>
+<input class="w-full pl-10 pr-4 py-2 bg-surface rounded-lg border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary text-sm outline-none" type="text" value="01 Jan 2026 - 31 Mar 2026">
+</div>
+</div>
+<div class="flex-1 min-w-[200px]">
+<label class="block font-label-sm text-label-sm text-on-surface-variant mb-2">Divisi</label>
+<select class="w-full px-4 py-2 bg-surface rounded-lg border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary text-sm outline-none appearance-none cursor-pointer">
+<option value="">All Divisi</option>
+<option value="DSPN">DSPN - Sekretariat Perusahaan</option>
+<option value="DTPI">DTPI - Satuan Pengawasan Intern</option>
+<option value="DTAN">DTAN - Divisi Tanaman</option>
+<option value="DTPL">DTPL - Teknik &amp; Pengolahan</option>
+<option value="DINF">DINF - Infrastruktur</option>
+<option value="DITN">DITN - Investasi Tanaman</option>
+<option value="DPSN">DPSN - Pemasaran</option>
+<option value="DRPL">DRPL - Rantai Pasok &amp; Logistik</option>
+<option value="DPEN">DPEN - Pengadaan</option>
+<option value="DSKP">DSKP - Strategi Perusahaan</option>
+<option value="DSMS">DSMS - Sistem Manajemen &amp; Sustainability</option>
+<option value="DRPH">DRPH - Riset &amp; Pengembangan Bisnis</option>
+<option value="DKSH">DKSH - Keuangan Strategis</option>
+<option value="DPBA">DPBA - Perbendaharaan &amp; Anggaran</option>
+<option value="DAPN">DAPN - Akuntansi &amp; Perpajakan</option>
+<option value="DMRS">DMRS - Manajemen Risiko</option>
+<option value="DPSB">DPSB - Pengembangan SDM dan Budaya</option>
+<option value="DSDM">DSDM - Operasional SDM</option>
+<option value="DHPU">DHPU - HPS &amp; Umum</option>
+<option value="DTIS">DTIS - Teknologi Informasi</option>
+<option value="DHKT">DHKT - Hubungan Kelembagaan &amp; TJSL</option>
+<option value="DHKM">DHKM - Hukum</option>
+<option value="DPSR">DPSR - PSR dan Plasma</option>
+<option value="DPMO">DPMO - Project Management Office</option>
+</select>
+</div>
+<div class="flex-1 min-w-[200px]">
+<label class="block font-label-sm text-label-sm text-on-surface-variant mb-2">Kategori</label>
+<select class="w-full px-4 py-2 bg-surface rounded-lg border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary text-sm outline-none appearance-none cursor-pointer">
+<option>All Kategori</option>
+<option>Operasional</option>
+<option>Investasi</option>
+<option>Pemeliharaan</option>
+</select>
+</div>
+<div class="flex items-center gap-2">
+<button class="px-6 py-2 bg-primary text-on-primary rounded-lg hover:bg-surface-tint transition-colors text-sm font-medium">
+                            Apply Filters
+                        </button>
+<button class="px-4 py-2 text-on-surface-variant hover:text-on-surface transition-colors text-sm font-medium">
+                            Clear
+                        </button>
+</div>
+</div>
+</div>
+<!-- Data Table -->
+<div class="bg-surface-container-lowest rounded-xl shadow-[0_2px_12px_rgba(12,97,106,0.08)] border border-surface-container overflow-hidden">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low border-b border-surface-container text-xs uppercase tracking-wider text-on-surface-variant font-semibold">
+<th class="p-4 whitespace-nowrap cursor-pointer hover:bg-surface-container transition-colors group">
+<div class="flex items-center gap-1">Date <span class="material-symbols-outlined text-[14px] opacity-0 group-hover:opacity-100">arrow_downward</span></div>
+</th>
+<th class="p-4 whitespace-nowrap cursor-pointer hover:bg-surface-container transition-colors group">
+<div class="flex items-center gap-1">SAP ID <span class="material-symbols-outlined text-[14px] opacity-0 group-hover:opacity-100">arrow_downward</span></div>
+</th>
+<th class="p-4 whitespace-nowrap cursor-pointer hover:bg-surface-container transition-colors group">
+<div class="flex items-center gap-1">No MPP <span class="material-symbols-outlined text-[14px] opacity-0 group-hover:opacity-100">arrow_downward</span></div>
+</th>
+<th class="p-4 whitespace-nowrap cursor-pointer hover:bg-surface-container transition-colors group">
+<div class="flex items-center gap-1">Cost Center <span class="material-symbols-outlined text-[14px] opacity-0 group-hover:opacity-100">arrow_downward</span></div>
+</th>
+<th class="p-4 whitespace-nowrap">Divisi</th>
+<th class="p-4 whitespace-nowrap">Kategori</th>
+<th class="p-4 whitespace-nowrap text-right cursor-pointer hover:bg-surface-container transition-colors group">
+<div class="flex items-center justify-end gap-1">Tagihan <span class="material-symbols-outlined text-[14px] opacity-0 group-hover:opacity-100">arrow_downward</span></div>
+</th>
+<th class="p-4 whitespace-nowrap text-right">PPN (11%)</th>
+<th class="p-4 whitespace-nowrap text-right">Total</th>
+<th class="p-4 whitespace-nowrap text-center">Status</th>
+</tr>
+</thead>
+<tbody class="text-sm divide-y divide-surface-container">
+<tr class="hover:bg-surface-bright transition-colors">
+<td class="p-4 font-financial-sm text-financial-sm text-on-surface-variant">2026-03-15</td>
+<td class="p-4 font-financial-sm text-financial-sm text-primary">SAP-88291</td>
+<td class="p-4 font-financial-sm text-financial-sm text-on-surface">MPP-26-001</td>
+<td class="p-4 font-financial-sm text-financial-sm text-on-surface-variant">CC-1029</td>
+<td class="p-4 text-on-surface">Kelapa Sawit Utara</td>
+<td class="p-4">
+<span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-primary-container/10 text-primary">Operasional</span>
+</td>
+<td class="p-4 text-right font-financial-sm text-financial-sm text-on-surface">125,000,000</td>
+<td class="p-4 text-right font-financial-sm text-financial-sm text-on-surface-variant">13,750,000</td>
+<td class="p-4 text-right font-financial-sm text-financial-sm font-semibold text-on-surface">138,750,000</td>
+<td class="p-4 text-center">
+<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-secondary-container/30 text-on-secondary-container border border-secondary-container">Approved</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-bright transition-colors">
+<td class="p-4 font-financial-sm text-financial-sm text-on-surface-variant">2026-03-14</td>
+<td class="p-4 font-financial-sm text-financial-sm text-primary">SAP-88290</td>
+<td class="p-4 font-financial-sm text-financial-sm text-on-surface">MPP-26-002</td>
+<td class="p-4 font-financial-sm text-financial-sm text-on-surface-variant">CC-1044</td>
+<td class="p-4 text-on-surface">Pabrik Minyak Kelapa</td>
+<td class="p-4">
+<span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-tertiary-container/10 text-tertiary">Pemeliharaan</span>
+</td>
+<td class="p-4 text-right font-financial-sm text-financial-sm text-on-surface">85,500,000</td>
+<td class="p-4 text-right font-financial-sm text-financial-sm text-on-surface-variant">9,405,000</td>
+<td class="p-4 text-right font-financial-sm text-financial-sm font-semibold text-on-surface">94,905,000</td>
+<td class="p-4 text-center">
+<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-surface-container-high text-on-surface-variant border border-outline-variant">Pending</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-bright transition-colors">
+<td class="p-4 font-financial-sm text-financial-sm text-on-surface-variant">2026-03-12</td>
+<td class="p-4 font-financial-sm text-financial-sm text-primary">SAP-88285</td>
+<td class="p-4 font-financial-sm text-financial-sm text-on-surface">MPP-26-003</td>
+<td class="p-4 font-financial-sm text-financial-sm text-on-surface-variant">CC-2001</td>
+<td class="p-4 text-on-surface">Kelapa Sawit Selatan</td>
+<td class="p-4">
+<span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-secondary-container/20 text-on-secondary-container">Investasi</span>
+</td>
+<td class="p-4 text-right font-financial-sm text-financial-sm text-on-surface">450,000,000</td>
+<td class="p-4 text-right font-financial-sm text-financial-sm text-on-surface-variant">49,500,000</td>
+<td class="p-4 text-right font-financial-sm text-financial-sm font-semibold text-on-surface">499,500,000</td>
+<td class="p-4 text-center">
+<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-secondary-container/30 text-on-secondary-container border border-secondary-container">Approved</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination -->
+<div class="px-6 py-4 border-t border-surface-container flex items-center justify-between bg-surface-bright">
+<span class="text-sm text-on-surface-variant">Showing 1 to 10 of 3,492 entries</span>
+<div class="flex items-center gap-2">
+<button class="w-8 h-8 rounded border border-outline-variant flex items-center justify-center text-on-surface hover:bg-surface-container disabled:opacity-50"><span class="material-symbols-outlined text-[18px]">chevron_left</span></button>
+<button class="w-8 h-8 rounded bg-primary text-on-primary flex items-center justify-center text-sm font-medium">1</button>
+<button class="w-8 h-8 rounded border border-outline-variant flex items-center justify-center text-on-surface hover:bg-surface-container text-sm font-medium">2</button>
+<button class="w-8 h-8 rounded border border-outline-variant flex items-center justify-center text-on-surface hover:bg-surface-container text-sm font-medium">3</button>
+<span class="text-on-surface-variant px-1">...</span>
+<button class="w-8 h-8 rounded border border-outline-variant flex items-center justify-center text-on-surface hover:bg-surface-container disabled:opacity-50"><span class="material-symbols-outlined text-[18px]">chevron_right</span></button>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>
